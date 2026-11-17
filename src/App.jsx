@@ -1,24 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Utensils,
   ShieldCheck,
   Video,
   Clock,
   Ticket,
   Star,
-  AlertTriangle,
-  Sparkles,
-  CheckCircle2,
-  Users,
+  AlertCircle,
+  Check,
   QrCode,
   FileText,
-  Flame,
   RefreshCw,
-  Award,
-  Send,
-  Microwave,
-  PackageCheck,
-  Globe,
+  ArrowRight,
+  X,
 } from 'lucide-react';
 import {
   INITIAL_SHOPS,
@@ -31,246 +24,246 @@ import {
 
 const UI_TEXT = {
   vi: {
-    tagline: 'Bữa trưa học đường chuẩn sạch • Đặt trước không xếp hàng',
-    ticketLabel: 'Vé ăn định kỳ:',
+    tagline: 'Hệ thống đặt trước bữa trưa & minh bạch vệ sinh học đường',
+    ticketLabel: 'Vé định kỳ:',
     ticketUnit: 'suất',
-    walletLabel: 'Ví sinh viên:',
+    walletLabel: 'Số dư:',
     tabs: {
-      explore: 'Khám Phá Quầy & Vệ Sinh',
-      order: 'Đặt Trước & Omakase',
-      kitchen: 'Camera Bếp & Nhận Đồ',
-      mealpass: 'Gói Vé Ăn Định Kỳ',
-      reviews: 'Đánh Giá & Phản Ánh',
+      explore: 'Quầy ăn & Vệ sinh',
+      order: 'Đặt món & Omakase',
+      kitchen: 'Camera bếp & Nhận đồ',
+      mealpass: 'Gói vé định kỳ',
+      reviews: 'Đánh giá & Phản ánh',
     },
     hero: {
-      badge: '🌱 Cam kết 100% nguyên liệu tươi sạch kiểm định mỗi sáng',
-      title: 'Bữa Trưa Nóng Sốt, Đúng Định Lượng — Chỉ Từ 25.000đ/Suất',
+      badge: 'Kiểm định nguyên liệu 05:30 mỗi sáng',
+      title: 'Bữa trưa nóng sốt, đúng định lượng — chỉ từ 25.000đ/suất',
       subtitle:
-        'Kiểm tra trực tiếp bảng điểm vệ sinh A/B/C, nhật ký nguyên liệu đầu ngày và Camera bếp. Đặt trước món yêu thích hoặc để đầu bếp phối suất Omakase theo khẩu vị, nhận đồ ngay tại Làn ưu tiên không cần xếp hàng giờ cao điểm.',
-      ctaOrder: 'Đặt Suất Trưa Ngay',
-      ctaPass: 'Xem Gói Vé Tháng 25k',
-      stat1Title: 'Chuẩn Vệ Sinh A/B/C',
-      stat1Desc: 'Kiểm định & công khai nguyên liệu lúc 5:30 sáng',
-      stat2Title: 'Làn Nhận Đồ Ưu Tiên',
-      stat2Desc: 'Quét mã QR lấy cơm trong 15 giây, né giờ cao điểm',
-      stat3Title: 'Omakase Theo Khẩu Vị',
-      stat3Desc: 'Bếp tự phối món nóng sốt dựa trên ghi chú cá nhân',
+        'Tra cứu trực tiếp điểm vệ sinh A/B/C, nhật ký nguyên liệu đầu ngày và camera nhà bếp. Đặt trước thực đơn yêu thích hoặc chọn chế độ bếp tự phối (Omakase) theo khẩu vị riêng, nhận đồ tại làn ưu tiên không cần xếp hàng giờ cao điểm.',
+      ctaOrder: 'Đặt bữa trưa ngay',
+      ctaPass: 'Gói vé tháng 25.000đ',
+      stat1Title: 'Chuẩn vệ sinh A / B / C',
+      stat1Desc: 'Công khai nguồn gốc nguyên liệu và ảnh kiểm tra bếp hàng tuần',
+      stat2Title: 'Làn nhận đồ ưu tiên & Tủ khóa',
+      stat2Desc: 'Quét mã QR nhận suất ăn trong 15 giây, không chờ đợi',
+      stat3Title: 'Chế độ Omakase linh hoạt',
+      stat3Desc: 'Đầu bếp phối món nóng sốt theo ghi chú khẩu vị cá nhân',
     },
     explore: {
-      filterTitle: 'Lọc nhanh:',
-      filterAll: 'Tất cả quầy đạt chuẩn',
-      filterGradeA: '🛡️ Chuẩn Vệ Sinh Hạng A',
-      filterUnder30k: '💰 Suất Omakase ≤ 30.000đ',
-      filterLowCrowd: '⚡ Thông thoáng • Lấy nhanh',
-      refreshCrowd: 'Cập nhật lượng khách trực tiếp',
-      hygieneBadgeTitle: 'Điểm Vệ Sinh',
+      filterTitle: 'Bộ lọc',
+      filterAll: 'Tất cả quầy',
+      filterGradeA: 'Vệ sinh Hạng A',
+      filterUnder30k: 'Omakase ≤ 30.000đ',
+      filterLowCrowd: 'Ít người chờ',
+      refreshCrowd: 'Cập nhật lượng khách',
+      hygieneBadgeTitle: 'Vệ sinh',
       hygieneGradePrefix: 'Hạng',
-      watchCamBtn: 'Camera Bếp',
+      watchCamBtn: 'Xem bếp',
       priorityLaneBadge: 'Làn ưu tiên:',
       minutesShort: 'phút',
       crowdLow: 'Thông thoáng',
       crowdMed: 'Vừa phải',
-      crowdHigh: 'Đang đông',
+      crowdHigh: 'Đông khách',
       waitPrefix: 'Chờ',
-      warningBannerPrefix: 'Phản ánh vệ sinh gần đây:',
+      warningBannerPrefix: 'Phản ánh gần đây',
       warningBannerDesc: 'Ban quản lý đang giám sát khắc phục khu vực sàn bếp giờ cao điểm.',
-      currentCrowdLabel: 'Lượng khách tại quầy hiện tại:',
+      currentCrowdLabel: 'Lượng khách tại quầy',
       peopleUnit: 'người',
       ingredientLogTitle: 'Nhật ký nguyên liệu hôm nay',
       batchesUnit: 'lô',
       inspectedAt: 'Kiểm định:',
-      priceCommitLabel: 'Mức giá cam kết định lượng:',
-      btnInspectLog: 'Nhật Ký & Bếp',
-      btnOrderNow: 'Đặt Món / Omakase',
+      priceCommitLabel: 'Mức giá niêm yết',
+      btnInspectLog: 'Hồ sơ vệ sinh',
+      btnOrderNow: 'Đặt suất ăn',
     },
     order: {
-      step1Title: 'Chọn Quầy Canteen Đạt Chuẩn Vệ Sinh',
-      viewIngredientBtn: 'Xem nhật ký nguyên liệu của quầy này',
+      step1Title: 'Chọn quầy ăn',
+      viewIngredientBtn: 'Xem nhật ký nguyên liệu',
       priorityWaitLabel: 'Làn ưu tiên',
-      walkInWaitLabel: 'Khách thường',
-      step2Title: 'Chọn Hình Thức Suất Ăn',
-      modeOmakase: 'Chế độ Omakase (Bếp tự phối)',
-      modeMenu: 'Tự chọn món theo Menu ngày',
-      omakaseBadge: '✨ Đầu bếp phối món theo khẩu vị riêng',
-      omakaseTitle: 'Omakase Online — Suất Ăn Nóng Sốt Phối Theo Ghi Chú Cá Nhân',
+      walkInWaitLabel: 'Xếp hàng thường',
+      step2Title: 'Chọn hình thức bữa trưa',
+      modeOmakase: 'Omakase (Bếp tự phối)',
+      modeMenu: 'Chọn món theo thực đơn',
+      omakaseBadge: 'Đầu bếp phối món theo khẩu vị',
+      omakaseTitle: 'Omakase — Suất ăn nóng sốt phối theo ghi chú cá nhân',
       omakaseDesc:
-        'Không cần băn khoăn hôm nay ăn gì! Đầu bếp phối ngẫu nhiên 1 món đạm chính (≥150g) + 2 món phụ + 1 canh nóng từ nguyên liệu tươi nhất sáng nay.',
-      omakasePriceLabel: 'Giá Omakase niêm yết',
-      orOneTicket: 'Hoặc dùng 1 Vé ăn định kỳ (25k)',
-      chefHintLabel: '👨‍🍳 Gợi ý từ Bếp trưởng hôm nay: ',
-      prefTitle: 'Tùy chỉnh sở thích & Dị ứng cá nhân (Bếp sẽ chế biến đúng theo lựa chọn):',
-      previewOmakaseBtn: 'Xem thử gợi ý phối món Omakase hôm nay',
-      previewResultTitle: '🍱 Tổ hợp Omakase gợi ý',
+        'Đầu bếp tự chọn 1 món đạm chính (tối thiểu 150g) kết hợp 2 món phụ và 1 canh nóng từ nguyên liệu tươi nhập trong sáng nay.',
+      omakasePriceLabel: 'Giá lẻ niêm yết',
+      orOneTicket: 'Hoặc 1 vé ăn định kỳ (25.000đ)',
+      chefHintLabel: 'Thực đơn bếp chuẩn bị hôm nay: ',
+      prefTitle: 'Tùy chọn khẩu vị & dị ứng cá nhân',
+      previewOmakaseBtn: 'Xem gợi ý phối món mẫu',
+      previewResultTitle: 'Gợi ý kết hợp hôm nay',
       mainDishLabel: 'Món chính',
       sideDishLabel: 'Món phụ',
       soupLabel: 'Canh',
-      portionCommit: 'Định lượng chuẩn:',
-      customNoteLabel: 'Ghi chú riêng gửi trực tiếp tới màn hình nhà bếp:',
-      customNotePlaceholder: 'VD: Không hành, lấy thêm nước sốt, đựng vào hộp giữ nhiệt 1 ngăn...',
-      step3Badge: '⚡ Nhận đồ không cần xếp hàng',
-      step3Title: 'Chọn Khung Giờ Nhận Đồ (Làn Ưu Tiên & Tủ Khóa Giữ Nhiệt QR)',
+      portionCommit: 'Định lượng:',
+      customNoteLabel: 'Ghi chú gửi trực tiếp tới nhà bếp',
+      customNotePlaceholder: 'Ví dụ: Không hành, lấy thêm nước sốt, đựng hộp 1 ngăn chịu nhiệt...',
+      step3Badge: 'Nhận đồ không cần xếp hàng',
+      step3Title: 'Chọn khung giờ nhận đồ (Làn ưu tiên & Tủ khóa giữ nhiệt)',
       slotsRemainingPrefix: 'Còn',
-      slotsRemainingSuffix: 'suất',
-      summaryTitle: 'Tóm Tắt Đơn Đặt Trước',
-      summaryHygienePrefix: 'Chuẩn vệ sinh Hạng',
-      summaryStallLabel: 'Quầy thực hiện:',
-      summaryCamNote: '📹 Hỗ trợ xem trực tiếp Camera quá trình chế biến',
-      summaryMealLabel: 'Suất ăn đã chọn:',
-      summaryOmakaseName: '🍱 Suất Omakase Online (Nhà bếp tự phối)',
+      slotsRemainingSuffix: 'chỗ',
+      summaryTitle: 'Chi tiết đơn đặt trước',
+      summaryHygienePrefix: 'Vệ sinh Hạng',
+      summaryStallLabel: 'Quầy thực hiện',
+      summaryCamNote: 'Có hỗ trợ xem trực tiếp camera khu chế biến',
+      summaryMealLabel: 'Suất ăn đã chọn',
+      summaryOmakaseName: 'Suất Omakase (Nhà bếp tự phối)',
       summaryPrefLabel: 'Khẩu vị:',
       summaryStandardPref: 'Tiêu chuẩn',
-      summarySlotLabel: 'Khung giờ & Vị trí nhận đồ ưu tiên:',
-      summaryQrHint: '✅ Quét mã QR nhận ngay trong 15 giây, không phải xếp hàng chờ!',
-      paymentTitle: 'Phương thức thanh toán:',
-      payByTicketTitle: 'Dùng 1 Vé Ăn Định Kỳ (Khuyên dùng)',
+      summarySlotLabel: 'Khung giờ & Vị trí nhận đồ',
+      summaryQrHint: 'Quét mã QR nhận ngay tại làn ưu tiên, không phải xếp hàng chờ.',
+      paymentTitle: 'Phương thức thanh toán',
+      payByTicketTitle: 'Sử dụng 1 vé ăn định kỳ',
       payByTicketDescPrefix: 'Còn',
-      payByTicketDescSuffix: 'vé trong tài khoản • Tiết kiệm tới 30%',
-      oneTicketBadge: '1 Vé',
-      payByWalletTitle: 'Thanh toán trực tiếp bằng Ví Sinh Viên',
-      walletBalancePrefix: 'Số dư hiện tại:',
-      confirmOrderBtn: 'Xác Nhận Đặt Trước & Theo Dõi Bếp',
+      payByTicketDescSuffix: 'vé khả dụng • Tiết kiệm đến 30%',
+      oneTicketBadge: '1 vé',
+      payByWalletTitle: 'Thanh toán qua ví sinh viên',
+      walletBalancePrefix: 'Số dư:',
+      confirmOrderBtn: 'Xác nhận đặt suất ăn',
     },
     kitchen: {
-      liveCamBadge: 'CAMERA BẾP TRỰC TIẾP',
-      tempLabel: 'Nhiệt độ bếp:',
-      aiCheckTitle: '✓ Giám sát an toàn vệ sinh thời gian thực',
-      aiCheckDesc: 'Đầy đủ khẩu trang, găng tay & trang phục bếp tiêu chuẩn',
-      currentBatchLabel: 'Hoạt động chế biến hiện tại:',
-      viewLogBtn: 'Xem Nhật Ký Nguyên Liệu',
-      trackingOrderPrefix: 'Đơn hàng đang thực hiện',
-      simulateNextBtn: '⏭️ Chuyển bước chế biến',
+      liveCamBadge: 'TRỰC TIẾP',
+      tempLabel: 'Môi trường bếp:',
+      aiCheckTitle: 'Giám sát quy chuẩn vệ sinh',
+      aiCheckDesc: 'Đầy đủ khẩu trang, găng tay và trang phục bếp tiêu chuẩn',
+      currentBatchLabel: 'Tiến độ khu vực nấu',
+      viewLogBtn: 'Nhật ký nguyên liệu',
+      trackingOrderPrefix: 'Mã đơn hàng',
+      simulateNextBtn: 'Chuyển bước tiếp theo',
       steps: [
         {
-          title: '1. Đã tiếp nhận đơn & đồng bộ ghi chú cá nhân xuống bếp',
+          title: 'Tiếp nhận đơn & đồng bộ ghi chú xuống màn hình bếp',
         },
         {
-          title: '2. Kiểm định & cân định lượng nguyên liệu tươi sạch',
-          desc: 'Đảm bảo đủ định lượng ≥150g đạm, rau củ rửa sục ozone khử khuẩn',
+          title: 'Kiểm định & cân đúng định lượng nguyên liệu',
+          desc: 'Đảm bảo đủ tối thiểu 150g đạm, rau củ rửa sục ozone khử khuẩn',
         },
         {
-          title: '3. Đầu bếp đang chế biến nóng (Trực tiếp trên Camera)',
+          title: 'Đang chế biến nóng & đóng hộp giữ nhiệt',
           desc: 'Nấu mới theo mẻ, đóng vào hộp giữ nhiệt kháng khuẩn ở 65°C',
         },
         {
-          title: '4. Đã đặt sẵn tại Tủ Khóa / Làn Nhận Đồ Ưu Tiên!',
+          title: 'Đã đặt sẵn tại Tủ khóa / Làn nhận đồ ưu tiên',
           descPrefix: 'Sẵn sàng nhận trong khung giờ',
-          descSuffix: '• Không cần xếp hàng',
+          descSuffix: '— không cần xếp hàng',
         },
       ],
-      lockerBadge: 'Làn Nhận Đồ Ưu Tiên / Tủ Khóa Giữ Nhiệt',
+      lockerBadge: 'Vé nhận đồ ưu tiên / Tủ khóa',
       pickupTimeLabel: 'Khung giờ hẹn:',
       authCodeLabel: 'Mã nhận đồ:',
-      scanQrText: 'QUÉT MỞ TỦ',
-      selfZoneTitle: 'Khu Tự Túc: Đặt Giờ Lò Vi Sóng & Bồn Rửa Hộp Cơm 1 Ngăn',
+      scanQrText: 'MÃ NHẬN ĐỒ',
+      selfZoneTitle: 'Khu vực tự túc: Đặt lịch lò vi sóng & bồn rửa hộp cơm',
       selfZoneSubtitle:
-        'Dành cho sinh viên tự mang hộp cơm chuẩn bị sẵn từ nhà, chủ động hâm nóng và rửa dọn sạch sẽ mà không phải chờ đợi:',
-      currentSelfSlotPrefix: 'Lịch đặt hiện tại của bạn:',
-      bookSlotPrefix: 'Đặt khung',
+        'Dành cho sinh viên tự mang hộp cơm chuẩn bị sẵn từ nhà, chủ động hâm nóng và rửa dọn không phải chờ đợi:',
+      currentSelfSlotPrefix: 'Lịch đã đặt:',
+      bookSlotPrefix: 'Chọn',
     },
     mealpass: {
-      badge: '💳 Giải pháp tiết kiệm & chủ động bữa trưa',
-      title: 'Gói Vé Ăn Định Kỳ Tuần / Tháng — Ăn Trưa Chuẩn Sạch Chỉ 25.000đ/Suất',
+      badge: 'Tiết kiệm chi phí ăn trưa hàng tháng',
+      title: 'Gói vé ăn định kỳ Tuần / Tháng — chỉ từ 25.000đ/bữa',
       subtitle:
-        'Thay vì tốn 35.000đ – 50.000đ mỗi ngày tại các hàng quán không rõ chất lượng vệ sinh, gói vé định kỳ giúp bạn cố định chi phí hợp lý, chỉ áp dụng tại các bếp đạt chuẩn an toàn và luôn được ưu tiên nhận đồ không cần xếp hàng.',
-      currentTicketsLabel: 'Số vé ăn hiện có',
+        'Thay vì chi 35.000đ – 50.000đ mỗi ngày tại các quán ăn bên ngoài chưa rõ mức độ vệ sinh, gói vé định kỳ giúp cố định ngân sách hợp lý, chỉ áp dụng tại các bếp đạt chuẩn an toàn và luôn được nhận đồ tại làn ưu tiên.',
+      currentTicketsLabel: 'Số vé hiện có',
       ticketsUnit: 'vé',
       retailPricePrefix: 'Giá mua lẻ:',
-      perMealSuffix: '/ bữa trưa',
-      forMealsPrefix: 'cho',
+      perMealSuffix: '/ bữa',
+      forMealsPrefix: 'gói',
       mealsUnit: 'suất',
-      buyPlanBtnPrefix: 'Đăng Ký Gói (+',
-      buyPlanBtnSuffix: ' Vé Ăn Ngay)',
+      buyPlanBtnPrefix: 'Đăng ký gói (+',
+      buyPlanBtnSuffix: ' vé)',
     },
     reviews: {
-      badge: '💬 Cộng đồng sinh viên kiểm chứng',
-      formTitle: 'Đánh Giá Bữa Ăn hoặc Gửi Phản Ánh Vệ Sinh Ẩn Danh',
+      badge: 'Đánh giá từ sinh viên đã sử dụng',
+      formTitle: 'Gửi đánh giá hoặc phản ánh vệ sinh ẩn danh',
       formSubtitle:
-        'Giúp sinh viên dễ dàng biết trước quán nào ngon, sạch, đúng định lượng và tự động cảnh báo khi có vấn đề vệ sinh.',
-      modeReview: '⭐ Đánh giá quán ăn',
-      modeReport: '🚨 Phản ánh vệ sinh',
-      selectStallLabel: 'Chọn Quầy Canteen / Quán ăn:',
+        'Giúp cộng đồng sinh viên biết trước quán nào sạch sẽ, đúng định lượng và gửi cảnh báo trực tiếp tới Ban quản lý khi phát hiện vấn đề vệ sinh.',
+      modeReview: 'Đánh giá bữa ăn',
+      modeReport: 'Phản ánh vệ sinh',
+      selectStallLabel: 'Chọn quầy ăn',
       scoreOverall: 'Tổng thể',
-      scoreHygiene: 'Độ Vệ Sinh',
-      scorePortion: 'Định Lượng',
-      starsUnit: 'Sao ⭐',
-      pointsUnit: '/5 Điểm',
-      fullPortionUnit: '/5 Đầy đặn',
-      commentLabelNormal: 'Chia sẻ trải nghiệm thực tế của bạn (Định lượng, hương vị, tốc độ lấy đồ):',
-      commentLabelReport: 'Mô tả vấn đề vệ sinh cần khắc phục (Danh tính của bạn được bảo mật hoàn toàn):',
-      commentPlaceholderNormal: 'VD: Suất Omakase 30k đầy đặn, thịt tươi, quét mã QR lấy đồ rất nhanh...',
-      commentPlaceholderReport: 'VD: Khu vực khay đựng muỗng đũa cần lau khô hơn vào giờ cao điểm...',
-      submitReviewBtn: 'Đăng Đánh Giá Xác Thực',
-      submitReportBtn: 'Gửi Cảnh Báo Vệ Sinh Ẩn Danh',
-      feedTitle: 'Đánh Giá Thực Tế & Nhật Ký Giám Sát Vệ Sinh',
-      feedSubtitle: 'Chỉ sinh viên đã sử dụng dịch vụ mới có thể chấm điểm định lượng & vệ sinh',
-      verifiedBadge: '100% Sinh viên xác thực',
+      scoreHygiene: 'Độ vệ sinh',
+      scorePortion: 'Định lượng',
+      starsUnit: 'sao',
+      pointsUnit: '/5 điểm',
+      fullPortionUnit: '/5 điểm',
+      commentLabelNormal: 'Nhận xét thực tế (định lượng, hương vị, tốc độ nhận đồ)',
+      commentLabelReport: 'Nội dung phản ánh vệ sinh (danh tính người gửi được ẩn hoàn toàn)',
+      commentPlaceholderNormal: 'Ví dụ: Suất Omakase 30k đầy đặn, thịt tươi, nhận đồ ở tủ khóa rất nhanh...',
+      commentPlaceholderReport: 'Ví dụ: Khu vực khay đựng muỗng đũa cần được lau khô thường xuyên hơn...',
+      submitReviewBtn: 'Gửi đánh giá',
+      submitReportBtn: 'Gửi phản ánh ẩn danh',
+      feedTitle: 'Nhận xét từ sinh viên & Nhật ký giám sát vệ sinh',
+      feedSubtitle: 'Chỉ hiển thị đánh giá từ các đơn hàng đã xác thực',
+      verifiedBadge: 'Đã xác thực đơn hàng',
       hygieneScorePrefix: 'Vệ sinh:',
       managerReplyPrefix: 'Phản hồi từ Ban Quản Lý:',
     },
     modal: {
-      badge: 'Hồ Sơ Minh Bạch An Toàn Thực Phẩm',
-      inspectedByPrefix: 'Kiểm định bởi:',
-      ingredientTableTitle: 'Nhật Ký Nguồn Gốc Nguyên Liệu Tươi Sống Nhập Trong Ngày:',
-      originPrefix: 'Nguồn gốc:',
-      importedAtPrefix: 'Nhập lúc',
+      badge: 'Hồ sơ an toàn thực phẩm & nguồn gốc nguyên liệu',
+      inspectedByPrefix: 'Đơn vị kiểm tra:',
+      ingredientTableTitle: 'Nhật ký nguyên liệu tươi sống nhập trong ngày',
+      originPrefix: 'Nhà cung cấp:',
+      importedAtPrefix: 'Giờ nhập:',
       quantityPrefix: 'Khối lượng:',
-      storageTempPrefix: 'Bảo quản:',
-      weeklyPhotoCaption: '📸 Hình ảnh thực tế khu vực bếp kiểm tra định kỳ',
-      criteriaTitle: 'Các tiêu chuẩn an toàn vệ sinh được kiểm chứng:',
-      closeBtn: 'Đóng cửa sổ',
-      orderThisStallBtn: 'Đặt Suất Ăn Tại Quầy Này',
+      storageTempPrefix: 'Nhiệt độ:',
+      weeklyPhotoCaption: 'Hình ảnh thực tế khu vực chế biến kiểm tra định kỳ',
+      criteriaTitle: 'Danh mục kiểm tra vệ sinh tại quầy',
+      closeBtn: 'Đóng',
+      orderThisStallBtn: 'Đặt suất ăn tại quầy này',
     },
     footer: {
-      left: 'UniBite — Hệ thống Đặt Bữa Trưa Học Đường Thông Minh & Minh Bạch Vệ Sinh',
-      right: 'Đặt trước & Omakase • Camera Bếp • Điểm Vệ Sinh A/B/C • Nhật Ký Nguyên Liệu • Vé Ăn Định Kỳ',
+      left: 'UniBite — Nền tảng đặt trước bữa trưa & minh bạch vệ sinh học đường',
+      right: 'Đặt trước & Omakase • Camera bếp • Điểm vệ sinh A/B/C • Nhật ký nguyên liệu • Vé ăn định kỳ',
     },
     toasts: {
-      noTickets: 'Bạn đã hết Vé ăn định kỳ! Vui lòng đăng ký thêm gói Tuần/Tháng hoặc chọn Ví sinh viên.',
-      lowWallet: 'Số dư Ví sinh viên không đủ!',
-      orderSuccess: 'Đặt suất ăn thành công! Bạn có thể theo dõi trực tiếp qua Camera bếp.',
-      planSuccessPrefix: 'Đăng ký thành công! Đã cộng thêm +',
-      planSuccessSuffix: ' vé ăn vào tài khoản của bạn.',
-      emptyReview: 'Vui lòng nhập nội dung đánh giá hoặc phản ánh!',
-      reportSubmitted: 'Đã gửi phản ánh vệ sinh ẩn danh! Hệ thống đã cập nhật thông báo tới Ban quản lý.',
-      reviewSubmitted: 'Cảm ơn bạn đã gửi đánh giá giúp cộng đồng sinh viên chọn được quán ăn chất lượng!',
-      crowdUpdated: 'Đã cập nhật tình trạng khách thực tế tại các quầy ăn!',
-      stepUpdated: 'Đã cập nhật tiến độ chế biến của nhà bếp!',
-      selfSlotBookedPrefix: 'Đã đặt lịch sử dụng khu tự túc: ',
+      noTickets: 'Bạn đã hết vé ăn định kỳ. Vui lòng đăng ký thêm gói vé hoặc chọn thanh toán qua ví.',
+      lowWallet: 'Số dư ví sinh viên không đủ.',
+      orderSuccess: 'Đặt suất ăn thành công. Đang chuyển tới màn hình theo dõi bếp.',
+      planSuccessPrefix: 'Đăng ký thành công. Đã cộng thêm ',
+      planSuccessSuffix: ' vé ăn vào tài khoản.',
+      emptyReview: 'Vui lòng nhập nội dung nhận xét hoặc phản ánh.',
+      reportSubmitted: 'Đã gửi phản ánh vệ sinh ẩn danh tới Ban quản lý.',
+      reviewSubmitted: 'Đã đăng đánh giá của bạn.',
+      crowdUpdated: 'Đã làm mới dữ liệu lượng khách tại các quầy.',
+      stepUpdated: 'Đã cập nhật tiến độ chế biến đơn hàng.',
+      selfSlotBookedPrefix: 'Đã đặt khung giờ sử dụng khu tự túc: ',
     },
   },
   jp: {
-    tagline: '安心・清潔なキャンパスランチ • 事前予約で行列ゼロ',
-    ticketLabel: '定期食券残高:',
+    tagline: '学内スマートランチ予約・食品衛生可視化システム',
+    ticketLabel: '保有パス:',
     ticketUnit: '食分',
-    walletLabel: '学生ウォレット:',
+    walletLabel: '残高:',
     tabs: {
-      explore: '店舗一覧・衛生ランク',
-      order: '事前予約・おまかせ注文',
-      kitchen: '厨房カメラ・QR受取',
+      explore: '店舗一覧・衛生評価',
+      order: '事前予約・おまかせ',
+      kitchen: '厨房カメラ・受取票',
       mealpass: '定額ミールパス',
-      reviews: '学生レビュー・衛生報告',
+      reviews: '口コミ・衛生報告',
     },
     hero: {
-      badge: '🌱 毎朝5:30に検品された安全・新鮮な食材を100%使用',
-      title: '出来立て・分量保証の清潔なランチを1食 25,000đ から',
+      badge: '毎朝05:30の食材検品・産地公開を実施',
+      title: '出来立て・分量保証の清潔な昼食を 1食 25,000đ から',
       subtitle:
-        'A/B/C衛生ランク、当日の食材産地トレーサビリティ、厨房ライブカメラをいつでも確認可能。メニュー選択やシェフのおまかせ予約で、ピーク時でも優先レーン・保温ロッカーから15秒で受け取れます。',
-      ctaOrder: '今すぐランチを予約',
-      ctaPass: 'お得な定額パスを見る',
-      stat1Title: 'A/B/C 衛生ランク公開',
-      stat1Desc: '毎朝5:30の食材検品ログと週次厨房写真を公開',
-      stat2Title: '優先レーン＆スマートロッカー',
-      stat2Desc: 'QRコードをかざして15秒で受取・行列待ちゼロ',
-      stat3Title: 'お好み対応おまかせ弁当',
-      stat3Desc: '苦手食材や栄養バランスに合わせてシェフが調理',
+        'A/B/C衛生ランク、当日の食材トレーサビリティ、厨房ライブカメラを事前に確認可能。日替わりメニューやシェフのおまかせ予約で、ピーク時間帯でも優先レーン・保温ロッカーから並ばずに受け取れます。',
+      ctaOrder: 'ランチを予約する',
+      ctaPass: '定額ミールパスを見る',
+      stat1Title: 'A / B / C 衛生ランク制度',
+      stat1Desc: '毎朝の食材搬入記録と週次の厨房点検写真を公開',
+      stat2Title: '優先レーン＆保温ロッカー',
+      stat2Desc: 'QRコード提示で待ち時間15秒・ピーク時の行列を回避',
+      stat3Title: 'お好み対応おまかせモード',
+      stat3Desc: '苦手食材や栄養バランスに合わせてシェフがメニューを構成',
     },
     explore: {
-      filterTitle: '絞り込み:',
-      filterAll: 'すべての認定店舗',
-      filterGradeA: '🛡️ 衛生Aランク店舗のみ',
-      filterUnder30k: '💰 おまかせ 30,000đ 以下',
-      filterLowCrowd: '⚡ 空いている店舗',
-      refreshCrowd: '混雑状況をリアルタイム更新',
+      filterTitle: '絞り込み',
+      filterAll: 'すべての店舗',
+      filterGradeA: '衛生Aランクのみ',
+      filterUnder30k: 'おまかせ 30,000đ以下',
+      filterLowCrowd: '空いている店舗',
+      refreshCrowd: '混雑状況を更新',
       hygieneBadgeTitle: '衛生評価',
       hygieneGradePrefix: 'ランク',
       watchCamBtn: '厨房カメラ',
@@ -280,194 +273,193 @@ const UI_TEXT = {
       crowdMed: 'やや混雑',
       crowdHigh: '混雑中',
       waitPrefix: '通常待ち',
-      warningBannerPrefix: '最近の衛生フィードバック:',
-      warningBannerDesc: '管理委員会の指導のもと、ピーク時の床面乾燥対策を実施中です。',
-      currentCrowdLabel: '現在のカウンター利用状況:',
+      warningBannerPrefix: '最近の衛生改善報告',
+      warningBannerDesc: '管理委員会の指導のもと、ピーク時の洗い場床面の乾燥対策を実施中です。',
+      currentCrowdLabel: '現在のカウンター利用者数',
       peopleUnit: '名',
       ingredientLogTitle: '本日の食材トレーサビリティ記録',
       batchesUnit: '件',
       inspectedAt: '検品時刻:',
-      priceCommitLabel: '分量保証価格帯:',
-      btnInspectLog: '食材記録・衛生詳細',
-      btnOrderNow: '予約・おまかせ注文',
+      priceCommitLabel: '価格帯',
+      btnInspectLog: '衛生・食材記録',
+      btnOrderNow: '注文へ進む',
     },
     order: {
-      step1Title: '衛生基準クリア済みの店舗を選択',
-      viewIngredientBtn: 'この店舗の当日食材ログを見る',
+      step1Title: '店舗を選択',
+      viewIngredientBtn: '当日の食材記録を見る',
       priorityWaitLabel: '優先受取',
       walkInWaitLabel: '通常並び',
-      step2Title: '注文スタイルを選択',
-      modeOmakase: 'おまかせモード（シェフ厳選）',
-      modeMenu: '日替わりメニューから選択',
-      omakaseBadge: '✨ 個人メモに合わせてシェフが組み合わせ',
-      omakaseTitle: 'オンラインおまかせ — お好みに合わせた出来立てバランス弁当',
+      step2Title: '注文方法を選択',
+      modeOmakase: 'おまかせ（シェフ構成）',
+      modeMenu: 'メニューから選択',
+      omakaseBadge: '個別リクエスト対応',
+      omakaseTitle: 'おまかせ注文 — お好みに合わせた出来立てバランス弁当',
       omakaseDesc:
-        '毎日のメニュー選びに迷う必要なし！当日の新鮮食材から主菜1品（お肉・魚150g以上）＋副菜2品＋温かいスープをシェフがバランス良く盛り付けます。',
-      omakasePriceLabel: 'おまかせ通常価格',
+        '当日の新鮮食材から、主菜1品（肉・魚150g以上）＋副菜2品＋温かいスープをシェフがバランス良く組み合わせて提供します。',
+      omakasePriceLabel: '通常価格',
       orOneTicket: 'または定期パス1枚（25,000đ相当）',
-      chefHintLabel: '👨‍🍳 本日の料理長おすすめ構成: ',
-      prefTitle: 'お好み・アレルギー設定（選択内容に応じて調理いたします）:',
-      previewOmakaseBtn: '本日のおまかせ組み合わせ例を表示',
-      previewResultTitle: '🍱 本日のおまかせ構成イメージ',
+      chefHintLabel: '本日の調理ラインナップ: ',
+      prefTitle: 'お好み・アレルギー設定',
+      previewOmakaseBtn: '本日の組み合わせ例を見る',
+      previewResultTitle: '本日の構成イメージ',
       mainDishLabel: '主菜',
       sideDishLabel: '副菜',
       soupLabel: 'スープ',
-      portionCommit: '保証分量:',
-      customNoteLabel: '厨房モニターへ直接送る個別リクエストメモ:',
-      customNotePlaceholder: '例：ネギ抜き、タレ多め、レンジ対応の1段弁当箱に詰めてください...',
-      step3Badge: '⚡ ピーク時でも並ばず受け取り',
-      step3Title: '受取時間帯の選択（優先レーン＆スマート保温ロッカー）',
+      portionCommit: '規定分量:',
+      customNoteLabel: '厨房へのリクエストメモ',
+      customNotePlaceholder: '例：ネギ抜き、タレ少なめ、レンジ対応1段弁当箱を希望...',
+      step3Badge: 'ピーク時の行列をスキップ',
+      step3Title: '受取時間帯を選択（優先レーン・スマート保温ロッカー）',
       slotsRemainingPrefix: '残り',
       slotsRemainingSuffix: '枠',
-      summaryTitle: 'ご予約内容の確認',
+      summaryTitle: '予約内容の確認',
       summaryHygienePrefix: '衛生ランク',
-      summaryStallLabel: '調理店舗:',
-      summaryCamNote: '📹 厨房ライブカメラで調理過程をリアルタイム視聴可能',
-      summaryMealLabel: '選択したメニュー:',
-      summaryOmakaseName: '🍱 シェフおまかせバランス弁当',
-      summaryPrefLabel: 'お好み設定:',
-      summaryStandardPref: '標準スタイル',
-      summarySlotLabel: '受取時間＆優先受取場所:',
-      summaryQrHint: '✅ QRコード提示で待ち時間15秒・行列に並ぶ必要はありません！',
-      paymentTitle: 'お支払い方法:',
-      payByTicketTitle: '定期ミールパスを1枚使用（おすすめ）',
+      summaryStallLabel: '選択店舗',
+      summaryCamNote: '厨房ライブカメラで調理過程をリアルタイム確認可能',
+      summaryMealLabel: '注文メニュー',
+      summaryOmakaseName: 'シェフおまかせバランス弁当',
+      summaryPrefLabel: '設定内容:',
+      summaryStandardPref: '標準',
+      summarySlotLabel: '受取時間・場所',
+      summaryQrHint: '指定時間に優先レーンまたはQRロッカーから並ばずに受け取れます。',
+      paymentTitle: 'お支払い方法',
+      payByTicketTitle: '定期ミールパスを1枚使用',
       payByTicketDescPrefix: '現在',
-      payByTicketDescSuffix: '枚のパスを保有 • 最大30%お得',
+      payByTicketDescSuffix: '枚保有 • 最大30%お得',
       oneTicketBadge: 'パス1枚',
-      payByWalletTitle: '学生ウォレット残高で都度払い',
-      walletBalancePrefix: 'ウォレット残高:',
-      confirmOrderBtn: '予約を確定して厨房カメラを見る',
+      payByWalletTitle: '学生ウォレットで決済',
+      walletBalancePrefix: '残高:',
+      confirmOrderBtn: '予約を確定する',
     },
     kitchen: {
-      liveCamBadge: '厨房ライブ配信中',
-      tempLabel: '厨房内温度:',
-      aiCheckTitle: '✓ AI衛生モニタリング正常稼働中',
-      aiCheckDesc: 'マスク・衛生手袋・調理帽の着用100%確認済み',
-      currentBatchLabel: '現在の調理ステータス:',
-      viewLogBtn: '本日の食材記録を見る',
-      trackingOrderPrefix: '調理追跡中の注文',
-      simulateNextBtn: '⏭️ 次の調理ステップへ進める',
+      liveCamBadge: 'LIVE配信',
+      tempLabel: '厨房環境:',
+      aiCheckTitle: '衛生管理モニタリング稼働中',
+      aiCheckDesc: 'マスク・衛生手袋・調理帽の着用確認済み',
+      currentBatchLabel: '現在の調理ロット',
+      viewLogBtn: '食材記録を見る',
+      trackingOrderPrefix: '注文番号',
+      simulateNextBtn: '次のステップへ進める',
       steps: [
         {
-          title: '1. 注文確定＆お好みメモを厨房モニターへ送信完了',
+          title: '注文受付および個別リクエストの厨房同期完了',
         },
         {
-          title: '2. 新鮮食材の検品＆規定分量（タンパク質150g以上）の計量',
-          desc: 'オゾン殺菌洗浄済みの安全な野菜と当日朝納品のお肉を使用',
+          title: '食材検品および規定分量（主菜150g以上）の計量',
+          desc: 'オゾン洗浄済み野菜と当日朝納品の新鮮な肉・魚を使用',
         },
         {
-          title: '3. シェフが加熱調理中（ライブカメラで配信中）',
-          desc: '出来立てを65°C保温・抗菌仕様の弁当容器へ盛り付け中',
+          title: '加熱調理および保温容器への盛り付け中',
+          desc: '出来立てを65°C保温・抗菌仕様の弁当容器に封入',
         },
         {
-          title: '4. 優先受取レーン／保温ロッカーへ格納完了！',
-          descPrefix: '指定枠',
-          descSuffix: 'にて並ばずにお受け取りいただけます',
+          title: '優先受取レーン／保温ロッカーへ格納完了',
+          descPrefix: '受取枠',
+          descSuffix: 'にて待ち時間なしでお受け取り可能',
         },
       ],
-      lockerBadge: '優先受取レーン／スマート保温ロッカー',
-      pickupTimeLabel: '受取予定時間:',
-      authCodeLabel: '認証コード:',
-      scanQrText: 'QRで解錠',
-      selfZoneTitle: '自炊弁当サポート：電子レンジ＆1段弁当箱洗浄スペース予約',
+      lockerBadge: '優先受取パス／スマートロッカー',
+      pickupTimeLabel: '受取時間:',
+      authCodeLabel: '受取コード:',
+      scanQrText: '受取用QR',
+      selfZoneTitle: '自炊弁当エリア：電子レンジ・洗浄シンクの時間枠予約',
       selfZoneSubtitle:
-        '自宅から持参したお弁当を、ピーク時でも順番待ちなしで温め・洗浄できる専用清潔スペースです：',
-      currentSelfSlotPrefix: '現在の予約枠:',
-      bookSlotPrefix: '予約する:',
+        '自宅から持参した弁当箱を、ピーク時でも順番待ちなしで温め・洗浄できる専用清潔スペース：',
+      currentSelfSlotPrefix: '現在の予約:',
+      bookSlotPrefix: '選択:',
     },
     mealpass: {
-      badge: '💳 食費を抑えて安心・清潔なランチを計画的に',
-      title: '定額ミールパス（週・月）— 衛生Aランクの昼食が1食 25,000đ',
+      badge: '定額プランで食費を最適化',
+      title: '定額ミールパス（週・月）— 衛生Aランクの昼食が 1食 25,000đ',
       subtitle:
-        '衛生面や分量が不安な周辺店舗で毎日35,000đ〜50,000đを払う代わりに、定額ミールパスなら安全基準をクリアした学食・提携店の温かい昼食をお得な固定価格で確保できます。',
-      currentTicketsLabel: '保有ミールパス残数',
+        '衛生面や分量が不透明な周辺店舗で毎日35,000đ〜50,000đを支払う代わりに、定額ミールパスなら安全基準を満たした学食の温かい昼食を固定価格で計画的に確保できます。',
+      currentTicketsLabel: '保有パス残数',
       ticketsUnit: '枚',
-      retailPricePrefix: '通常合計価格:',
-      perMealSuffix: '/ 1食あたり',
+      retailPricePrefix: '通常合計:',
+      perMealSuffix: '/ 1食',
       forMealsPrefix: '計',
       mealsUnit: '食分',
-      buyPlanBtnPrefix: 'このプランを購入 (+',
-      buyPlanBtnSuffix: ' 食分チャージ)',
+      buyPlanBtnPrefix: 'プランを申し込む (+',
+      buyPlanBtnSuffix: ' 食分)',
     },
     reviews: {
-      badge: '💬 実際に食べた学生による信頼できる評価',
-      formTitle: '店舗レビュー投稿・匿名の衛生改善レポート',
+      badge: '利用学生による評価とフィードバック',
+      formTitle: 'レビュー投稿・匿名の衛生改善レポート',
       formSubtitle:
-        '後輩や他の学生が失敗せず良いお店を選べるよう、分量・味・衛生面のリアルな評価を共有しましょう。',
-      modeReview: '⭐ 食事レビューを投稿',
-      modeReport: '🚨 衛生問題を匿名報告',
-      selectStallLabel: '対象店舗を選択:',
+        '他の学生が安心してお店を選べるよう分量・味・衛生面の評価を共有したり、衛生上の問題点を匿名で管理委員会へ報告できます。',
+      modeReview: '食事レビューを投稿',
+      modeReport: '衛生問題を匿名報告',
+      selectStallLabel: '対象店舗',
       scoreOverall: '総合評価',
-      scoreHygiene: '衛生・清潔度',
-      scorePortion: '量の満足度',
-      starsUnit: 'つ星 ⭐',
-      pointsUnit: '/5 点',
-      fullPortionUnit: '/5 満点',
-      commentLabelNormal: '実際に食べた感想（分量・清潔さ・受け取りのスムーズさなど）:',
-      commentLabelReport: '衛生面で改善してほしい点（投稿者の個人情報は完全に匿名化されます）:',
-      commentPlaceholderNormal: '例：30,000đのおまかせ弁当でもお肉たっぷりで清潔！QRロッカーで即受け取れました。',
-      commentPlaceholderReport: '例：ピーク時間帯にカトラリー置き場が少し濡れていたので改善をお願いします...',
-      submitReviewBtn: '認証済み学生レビューを投稿',
-      submitReportBtn: '管理委員会へ匿名で衛生報告を送信',
-      feedTitle: '学生のリアルな口コミ＆衛生モニタリング履歴',
-      feedSubtitle: '実際に注文・受取を完了した学生のみが評価を投稿できる信頼性の高いシステムです',
-      verifiedBadge: '100% 注文認証済みレビュー',
-      hygieneScorePrefix: '衛生評価:',
+      scoreHygiene: '衛生面',
+      scorePortion: '分量',
+      starsUnit: '点',
+      pointsUnit: '/5',
+      fullPortionUnit: '/5',
+      commentLabelNormal: '利用した感想（分量、味、受け取りのスムーズさなど）',
+      commentLabelReport: '改善してほしい衛生上の問題点（投稿者情報は匿名化されます）',
+      commentPlaceholderNormal: '例：30,000đのおまかせ弁当でもお肉がしっかり入っており、ロッカー受取も快適でした。',
+      commentPlaceholderReport: '例：ピーク時間帯にカトラリー周辺の清掃頻度を増やしてほしいです...',
+      submitReviewBtn: 'レビューを投稿する',
+      submitReportBtn: '匿名で報告を送信する',
+      feedTitle: '学生の口コミおよび衛生モニタリング履歴',
+      feedSubtitle: '実際に注文・受取を完了した学生のみが投稿可能',
+      verifiedBadge: '注文認証済み',
+      hygieneScorePrefix: '衛生:',
       managerReplyPrefix: '管理委員会からの回答:',
     },
     modal: {
-      badge: '食品安全・食材トレーサビリティ公開情報',
+      badge: '食品安全・食材トレーサビリティ記録',
       inspectedByPrefix: '監査担当:',
-      ingredientTableTitle: '本日朝に納品された新鮮食材の産地・検品ログ:',
-      originPrefix: '生産・供給元:',
-      importedAtPrefix: '納品時刻',
-      quantityPrefix: '納品量:',
-      storageTempPrefix: '保管温度:',
-      weeklyPhotoCaption: '📸 今週撮影された実際の厨房衛生チェック写真',
-      criteriaTitle: 'クリア済みの衛生管理チェック項目:',
+      ingredientTableTitle: '当日朝に納品された食材の産地・検品ログ',
+      originPrefix: '供給元:',
+      importedAtPrefix: '納品時刻:',
+      quantityPrefix: '数量:',
+      storageTempPrefix: '温度:',
+      weeklyPhotoCaption: '定期点検時に撮影された厨房内の様子',
+      criteriaTitle: '衛生管理チェックリスト',
       closeBtn: '閉じる',
-      orderThisStallBtn: 'この店舗でお弁当を予約する',
+      orderThisStallBtn: 'この店舗で予約する',
     },
     footer: {
       left: 'UniBite — スマート学食予約＆食品衛生可視化プラットフォーム',
       right: '事前予約・おまかせ • 厨房カメラ • A/B/C衛生ランク • 食材ログ • 定額ミールパス',
     },
     toasts: {
-      noTickets: 'ミールパスの残数がありません！定額パスを購入するかウォレット決済を選択してください。',
-      lowWallet: 'ウォレット残高が不足しています！',
-      orderSuccess: '予約が完了しました！厨房ライブカメラで調理状況を確認できます。',
-      planSuccessPrefix: 'プラン登録完了！ミールパス +',
-      planSuccessSuffix: ' 食分がアカウントに追加されました。',
-      emptyReview: 'レビュー内容または報告内容を入力してください。',
-      reportSubmitted: '匿名の衛生報告を送信しました。管理委員会および店舗へ通知されました。',
-      reviewSubmitted: 'レビューを投稿しました！学生コミュニティへのご協力ありがとうございます。',
-      crowdUpdated: '各店舗のリアルタイム混雑状況を更新しました！',
-      stepUpdated: '厨房の調理ステップが更新されました！',
-      selfSlotBookedPrefix: '電子レンジ＆洗浄スペースを予約しました: ',
+      noTickets: 'ミールパスの残数がありません。パスを追加購入するかウォレット決済を選択してください。',
+      lowWallet: 'ウォレット残高が不足しています。',
+      orderSuccess: '予約が確定しました。厨房モニタリング画面へ移動します。',
+      planSuccessPrefix: 'プラン登録が完了しました（+',
+      planSuccessSuffix: ' 食分追加）。',
+      emptyReview: 'コメント内容を入力してください。',
+      reportSubmitted: '匿名の衛生改善レポートを管理委員会へ送信しました。',
+      reviewSubmitted: 'レビューを投稿しました。',
+      crowdUpdated: '混雑状況データを更新しました。',
+      stepUpdated: '調理ステータスを更新しました。',
+      selfSlotBookedPrefix: '温め・洗浄スペースを予約しました: ',
     },
   },
 };
 
 export default function App() {
-  // Language Mode: 'vi' or 'jp' (Separate clean modes, no stacked text)
   const [lang, setLang] = useState(() => localStorage.getItem('unibite_lang') || 'vi');
   const t = UI_TEXT[lang];
 
-  const [activeTab, setActiveTab] = useState('explore'); // explore | order | kitchen | mealpass | reviews
+  const [activeTab, setActiveTab] = useState('explore');
 
   // Shops & Filters
   const [shops, setShops] = useState(INITIAL_SHOPS);
-  const [selectedFilter, setSelectedFilter] = useState('all'); // all | gradeA | under30k | lowCrowd
+  const [selectedFilter, setSelectedFilter] = useState('all');
   const [selectedShopId, setSelectedShopId] = useState('shop-1');
   const [inspectModalShop, setInspectModalShop] = useState(null);
 
   // Ordering & Omakase State
-  const [orderMode, setOrderMode] = useState('omakase'); // omakase | menu
+  const [orderMode, setOrderMode] = useState('omakase');
   const [selectedMenuId, setSelectedMenuId] = useState('m-101');
   const [selectedPrefs, setSelectedPrefs] = useState(['no-onion', 'high-protein', 'reheat-box']);
   const [customNote, setCustomNote] = useState('');
   const [selectedSlotId, setSelectedSlotId] = useState('slot-2');
-  const [paymentMethod, setPaymentMethod] = useState('ticket'); // ticket | wallet
+  const [paymentMethod, setPaymentMethod] = useState('ticket');
   const [omakasePreview, setOmakasePreview] = useState(null);
 
   // Student Wallet & Meal Pass State
@@ -480,11 +472,11 @@ export default function App() {
     return saved !== null ? Number(saved) : 185000;
   });
 
-  // Active Order State (with localized fields)
+  // Active Order State
   const [orderState, setOrderState] = useState({
     id: 'ORD-8829',
     shopId: 'shop-1',
-    slotTime: '11:15 - 11:30',
+    slotTime: '11:15 – 11:30',
     lockerNumber: 'A08',
     qrCode: 'UNIBITE-A08-8829',
     step: 2,
@@ -532,7 +524,7 @@ export default function App() {
 
   const showToast = (msg) => {
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3800);
+    setTimeout(() => setToastMessage(null), 3500);
   };
 
   const selectedShop = shops.find((s) => s.id === selectedShopId) || shops[0];
@@ -540,7 +532,6 @@ export default function App() {
   const selectedSlot = PICKUP_SLOTS.find((s) => s.id === selectedSlotId) || PICKUP_SLOTS[0];
   const selectedSlotL = selectedSlot[lang];
 
-  // Filter shops
   const filteredShops = shops.filter((shop) => {
     if (selectedFilter === 'gradeA') return shop.hygieneGrade === 'A';
     if (selectedFilter === 'under30k') return shop.omakasePrice <= 30000;
@@ -548,14 +539,12 @@ export default function App() {
     return true;
   });
 
-  // Toggle Omakase preference chip
   const togglePref = (id) => {
     setSelectedPrefs((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
   };
 
-  // Generate Omakase Dish Combination Preview in current language
   const handleGenerateOmakasePreview = () => {
     const combos =
       lang === 'vi'
@@ -563,15 +552,15 @@ export default function App() {
             mains: [
               'Ức gà áp chảo sốt Teriyaki (150g)',
               'Cá hồi phi lê sốt chanh dây (140g)',
-              'Thịt bò Mỹ xào bông cải xanh (145g)',
-              'Sườn non nướng mật ong rừng (155g)',
+              'Thịt bò xào bông cải xanh (145g)',
+              'Sườn non nướng mật ong (155g)',
             ],
             sides: [
-              'Trứng cuộn Tamagoyaki + Đậu hũ non sốt nấm',
-              'Salad bắp cải mè rang + Kim chi cải thảo',
-              'Rau củ luộc thập cẩm + Trứng ngâm tương',
+              'Trứng cuộn Tamagoyaki, đậu hũ non sốt nấm',
+              'Salad bắp cải mè rang, kim chi cải thảo',
+              'Rau củ luộc thập cẩm, trứng ngâm tương',
             ],
-            soups: ['Canh rong biển thịt băm nóng', 'Canh chua nấm kim châm', 'Canh cải ngọt nấu tôm'],
+            soups: ['Canh rong biển thịt băm', 'Canh chua nấm kim châm', 'Canh cải ngọt nấu tôm'],
           }
         : {
             mains: [
@@ -581,9 +570,9 @@ export default function App() {
               'ハニーローストポークリブ (155g)',
             ],
             sides: [
-              '厚焼き玉子＋きのこあんかけ豆腐',
-              '胡麻ドレッシングキャベツサラダ＋白菜キムチ',
-              '彩り温野菜＋半熟味玉',
+              '厚焼き玉子・きのこあんかけ豆腐',
+              '胡麻ドレッシングサラダ・白菜キムチ',
+              '彩り温野菜・半熟味玉',
             ],
             soups: ['豚ひき肉入りわかめスープ', 'えのき茸の酸辣スープ', '小松菜と海老のスープ'],
           };
@@ -596,7 +585,6 @@ export default function App() {
     });
   };
 
-  // Place Pre-order / Omakase Order
   const handlePlaceOrder = () => {
     const chosenMenu =
       selectedShopL.menu.find((m) => m.id === selectedMenuId) || selectedShopL.menu[0];
@@ -638,13 +626,11 @@ export default function App() {
     setActiveTab('kitchen');
   };
 
-  // Buy Meal Plan
   const handleBuyMealPlan = (plan) => {
     setMealTickets((prev) => prev + plan.meals);
     showToast(`${t.toasts.planSuccessPrefix}${plan.meals}${t.toasts.planSuccessSuffix}`);
   };
 
-  // Submit Review or Hygiene Alert
   const handleSubmitReview = (e) => {
     e.preventDefault();
     if (!reviewText.trim()) {
@@ -663,18 +649,18 @@ export default function App() {
       vi: {
         shopName: targetShop.vi.name,
         studentName: isHygieneReport
-          ? 'Ẩn danh (Sinh viên đã xác thực)'
+          ? 'Sinh viên ẩn danh (Đã xác thực)'
           : 'Sinh viên (Đã xác thực đơn hàng)',
         verifiedOrder: isHygieneReport
           ? 'Phản ánh Vệ sinh An toàn Thực phẩm'
-          : 'Đã đặt suất ăn qua UniBite',
+          : 'Đơn đặt trước qua UniBite',
         timeAgo: 'Vừa xong',
         comment: reviewText,
         tags: isHygieneReport
-          ? ['Cảnh báo vệ sinh', 'Đã gửi Ban quản lý']
-          : ['Đúng định lượng', 'Đáng tiền', 'Sinh viên xác thực'],
+          ? ['Phản ánh vệ sinh', 'Đã gửi Ban quản lý']
+          : ['Đúng định lượng', 'Đáng tiền'],
         managerReply: isHygieneReport
-          ? 'Hệ thống tự động: Đã gửi thông báo ẩn danh tới Ban Quản Lý & Chủ quầy để kiểm tra khắc phục ngay.'
+          ? 'Ban Quản Lý: Đã tiếp nhận phản ánh ẩn danh và chuyển bộ phận giám sát kiểm tra trực tiếp tại quầy.'
           : null,
       },
       jp: {
@@ -684,14 +670,14 @@ export default function App() {
           : '認証済み学生ユーザー',
         verifiedOrder: isHygieneReport
           ? '食品衛生フィードバック報告'
-          : 'UniBiteで注文・受取済み',
+          : 'UniBite事前予約注文',
         timeAgo: 'たった今',
         comment: reviewText,
         tags: isHygieneReport
-          ? ['衛生改善リクエスト', '管理委員会へ通知済み']
-          : ['分量保証', '高コスパ', '注文認証済み'],
+          ? ['衛生改善リクエスト', '管理委員会通知済み']
+          : ['分量保証', '高コスパ'],
         managerReply: isHygieneReport
-          ? '自動システム通知：管理委員会および店舗責任者へ匿名で改善要請が送信されました。'
+          ? '管理委員会より：匿名報告を受け付けました。担当チームが現地確認および改善指導を行います。'
           : null,
       },
     };
@@ -713,7 +699,6 @@ export default function App() {
     setIsHygieneReport(false);
   };
 
-  // Simulate Crowd Update
   const handleRefreshCrowd = () => {
     const statuses = ['low', 'medium', 'high'];
     setShops((prev) =>
@@ -739,70 +724,64 @@ export default function App() {
   const getCrowdBadge = (status, waitMin) => {
     if (status === 'low') {
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse-live" />
-          {t.explore.crowdLow} ({t.explore.waitPrefix} ~{waitMin}
-          {t.explore.minutesShort})
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-emerald-950/80 text-emerald-200 border border-emerald-700/60 backdrop-blur-xs">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+          {t.explore.crowdLow} ({t.explore.waitPrefix} {waitMin} {t.explore.minutesShort})
         </span>
       );
     }
     if (status === 'medium') {
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-300">
-          <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse-live" />
-          {t.explore.crowdMed} ({t.explore.waitPrefix} ~{waitMin}
-          {t.explore.minutesShort})
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-amber-950/80 text-amber-200 border border-amber-700/60 backdrop-blur-xs">
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+          {t.explore.crowdMed} ({t.explore.waitPrefix} {waitMin} {t.explore.minutesShort})
         </span>
       );
     }
     return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-100 text-rose-800 border border-rose-300">
-        <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse-live" />
-        {t.explore.crowdHigh} ({t.explore.waitPrefix} ~{waitMin}
-        {t.explore.minutesShort})
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-rose-950/80 text-rose-200 border border-rose-700/60 backdrop-blur-xs">
+        <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
+        {t.explore.crowdHigh} ({t.explore.waitPrefix} {waitMin} {t.explore.minutesShort})
       </span>
     );
   };
 
   const getHygieneBadge = (grade, score) => {
     const colors = {
-      A: 'bg-emerald-600 text-white ring-emerald-200',
-      B: 'bg-amber-500 text-white ring-amber-200',
-      C: 'bg-rose-600 text-white ring-rose-200',
+      A: 'bg-emerald-700 text-white',
+      B: 'bg-amber-600 text-white',
+      C: 'bg-rose-700 text-white',
     };
     return (
-      <div className="flex items-center gap-2 bg-white/95 backdrop-blur px-3 py-1.5 rounded-xl shadow-md border border-slate-200">
+      <div className="inline-flex items-center gap-2 bg-white/95 backdrop-blur-xs px-2.5 py-1.5 rounded-lg shadow-xs border border-zinc-200">
         <div
-          className={`w-8 h-8 rounded-lg flex items-center justify-center font-extrabold text-lg ring-4 ${
+          className={`w-6 h-6 rounded flex items-center justify-center font-bold text-xs ${
             colors[grade] || colors.A
           }`}
         >
           {grade}
         </div>
-        <div className="text-left">
-          <div className="text-[10px] uppercase tracking-wider font-bold text-slate-500 leading-none">
+        <div className="text-left leading-tight">
+          <div className="text-[10px] text-zinc-500 font-medium">
             {t.explore.hygieneBadgeTitle}
           </div>
-          <div className="text-xs font-extrabold text-slate-900 mt-0.5">
-            {t.explore.hygieneGradePrefix} {grade} ({score}/100)
-          </div>
+          <div className="text-xs font-bold text-zinc-900">{score}/100</div>
         </div>
       </div>
     );
   };
 
-  // Compute localized active order details
   const orderShop = shops.find((s) => s.id === orderState.shopId) || shops[0];
   const orderShopL = orderShop[lang];
   const orderItemName = orderState.isOmakase
     ? lang === 'vi'
-      ? `Suất Omakase Chuẩn Sạch (${orderShopL.name})`
-      : `シェフおまかせバランス弁当 (${orderShopL.name})`
+      ? `Suất Omakase (${orderShopL.name})`
+      : `おまかせバランス弁当 (${orderShopL.name})`
     : (orderShopL.menu.find((m) => m.id === orderState.menuId) || orderShopL.menu[0]).name;
 
   const orderPrefSummary = OMAKASE_PREFERENCES.filter((p) => orderState.prefs.includes(p.id))
     .map((p) => p[lang])
-    .join(' • ');
+    .join(', ');
 
   const currentSelfZone = SELF_BRING_ZONES[bookedSelfSlotIndex.zoneIdx] || SELF_BRING_ZONES[0];
   const currentSelfSlotText = `${currentSelfZone[lang].name} — ${
@@ -810,121 +789,111 @@ export default function App() {
   }`;
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900">
-      {/* Toast Notification */}
+    <div className="min-h-screen flex flex-col bg-[#f8f8f6] text-zinc-900">
+      {/* Subtle Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-5 right-5 z-50 max-w-md bg-slate-900 text-white px-4 py-3.5 rounded-2xl shadow-2xl border border-emerald-500/40 flex items-center gap-3 animate-bounce">
-          <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-          <span className="text-sm font-medium">{toastMessage}</span>
+        <div className="fixed bottom-5 right-5 z-50 max-w-md bg-zinc-900 text-white px-4 py-3 rounded-xl shadow-lg border border-zinc-700 flex items-center gap-2.5">
+          <Check className="w-4 h-4 text-emerald-400 shrink-0" strokeWidth={2} />
+          <span className="text-xs sm:text-sm font-medium">{toastMessage}</span>
         </div>
       )}
 
       {/* Top Header */}
-      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200 shadow-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
-          {/* Brand Logo */}
+      <header className="sticky top-0 z-30 bg-white border-b border-zinc-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+          {/* Clean Brand Logo */}
           <div
             onClick={() => setActiveTab('explore')}
             className="flex items-center gap-3 cursor-pointer"
           >
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 flex items-center justify-center text-white shadow-md shadow-emerald-600/20">
-              <Utensils className="w-6 h-6" />
+            <div className="w-9 h-9 rounded-lg bg-emerald-800 flex items-center justify-center text-white font-extrabold text-sm tracking-tighter">
+              UB
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-extrabold text-xl tracking-tight text-slate-900">
-                  Uni<span className="text-emerald-600">Bite</span>
-                </span>
-                <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-200">
-                  Smart Campus Lunch
+                <span className="font-bold text-lg tracking-tight text-zinc-900">UniBite</span>
+                <span className="hidden sm:inline-block text-[11px] font-medium px-2 py-0.5 rounded bg-zinc-100 text-zinc-600 border border-zinc-200">
+                  Campus Dining
                 </span>
               </div>
-              <p className="text-xs text-slate-500">{t.tagline}</p>
+              <p className="hidden md:block text-xs text-zinc-500">{t.tagline}</p>
             </div>
           </div>
 
-          {/* Right Controls: Separate Language Switcher (VI | JP), Meal Pass & Wallet */}
-          <div className="flex items-center flex-wrap gap-2.5">
-            {/* Segmented Language Mode Switcher */}
-            <div className="inline-flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
-              <Globe className="w-3.5 h-3.5 text-slate-500 ml-2 mr-1" />
+          {/* Right Controls: Clean Language Switcher (VI | JP), Meal Pass & Wallet */}
+          <div className="flex items-center gap-2.5">
+            {/* Minimalist Segmented Language Switcher */}
+            <div className="inline-flex items-center bg-zinc-100 p-0.5 rounded-lg border border-zinc-200">
               <button
                 onClick={() => setLang('vi')}
-                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer ${
+                className={`px-2.5 py-1 rounded-md text-xs font-semibold transition cursor-pointer ${
                   lang === 'vi'
-                    ? 'bg-white text-emerald-700 shadow-2xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white text-zinc-900 shadow-2xs'
+                    : 'text-zinc-500 hover:text-zinc-800'
                 }`}
               >
-                🇻🇳 Tiếng Việt
+                Tiếng Việt
               </button>
               <button
                 onClick={() => setLang('jp')}
-                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer ${
+                className={`px-2.5 py-1 rounded-md text-xs font-semibold transition cursor-pointer ${
                   lang === 'jp'
-                    ? 'bg-white text-emerald-700 shadow-2xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white text-zinc-900 shadow-2xs'
+                    : 'text-zinc-500 hover:text-zinc-800'
                 }`}
               >
-                🇯🇵 日本語
+                日本語
               </button>
             </div>
 
-            {/* Meal Pass Tickets Badge */}
-            <div
+            {/* Meal Pass Tickets Counter */}
+            <button
               onClick={() => setActiveTab('mealpass')}
-              className="flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3.5 py-1.5 rounded-xl cursor-pointer transition"
+              className="flex items-center gap-2 bg-emerald-50/80 hover:bg-emerald-100/80 border border-emerald-200 px-3 py-1.5 rounded-lg cursor-pointer transition text-xs"
             >
-              <Ticket className="w-4 h-4 text-emerald-600" />
-              <div className="text-xs">
-                <span className="text-slate-600">{t.ticketLabel} </span>
-                <span className="font-extrabold text-emerald-700">
-                  {mealTickets} {t.ticketUnit}
-                </span>
-              </div>
-            </div>
+              <Ticket className="w-3.5 h-3.5 text-emerald-700" strokeWidth={1.75} />
+              <span className="text-zinc-600 hidden sm:inline">{t.ticketLabel}</span>
+              <span className="font-bold text-emerald-800">
+                {mealTickets} {t.ticketUnit}
+              </span>
+            </button>
 
             {/* Student Wallet */}
-            <div className="hidden sm:flex items-center gap-2 bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-xl text-xs">
-              <span className="text-slate-500">{t.walletLabel}</span>
-              <span className="font-bold text-slate-800">
+            <div className="hidden sm:flex items-center gap-1.5 bg-zinc-100 border border-zinc-200 px-3 py-1.5 rounded-lg text-xs">
+              <span className="text-zinc-500">{t.walletLabel}</span>
+              <span className="font-semibold text-zinc-900 tabular-nums">
                 {walletBalance.toLocaleString('vi-VN')}đ
               </span>
             </div>
           </div>
         </div>
 
-        {/* Navigation Bar */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 border-t border-slate-100 bg-slate-50/60">
-          <nav className="flex items-center gap-1.5 overflow-x-auto py-2">
+        {/* Clean Underline Navigation Bar */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 border-t border-zinc-100">
+          <nav className="flex items-center gap-6 overflow-x-auto">
             {[
-              { id: 'explore', label: t.tabs.explore, icon: ShieldCheck },
-              { id: 'order', label: t.tabs.order, icon: Sparkles },
-              { id: 'kitchen', label: t.tabs.kitchen, icon: Video, badge: 'LIVE' },
-              { id: 'mealpass', label: t.tabs.mealpass, icon: Ticket },
-              { id: 'reviews', label: t.tabs.reviews, icon: Star },
+              { id: 'explore', label: t.tabs.explore },
+              { id: 'order', label: t.tabs.order },
+              { id: 'kitchen', label: t.tabs.kitchen, live: true },
+              { id: 'mealpass', label: t.tabs.mealpass },
+              { id: 'reviews', label: t.tabs.reviews },
             ].map((tab) => {
-              const Icon = tab.icon;
               const isActive = activeTab === tab.id;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition cursor-pointer ${
+                  className={`relative py-3 text-xs sm:text-sm font-semibold whitespace-nowrap transition cursor-pointer flex items-center gap-2 border-b-2 ${
                     isActive
-                      ? 'bg-emerald-600 text-white shadow-xs'
-                      : 'text-slate-600 hover:bg-white hover:text-slate-900'
+                      ? 'border-emerald-700 text-emerald-800'
+                      : 'border-transparent text-zinc-500 hover:text-zinc-900'
                   }`}
                 >
-                  <Icon className="w-4 h-4 shrink-0" />
                   <span>{tab.label}</span>
-                  {tab.badge && (
-                    <span
-                      className={`ml-1 px-1.5 py-0.5 text-[10px] rounded-md font-extrabold ${
-                        isActive ? 'bg-white text-emerald-700' : 'bg-rose-100 text-rose-700'
-                      }`}
-                    >
-                      {tab.badge}
+                  {tab.live && (
+                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] rounded bg-rose-50 text-rose-700 border border-rose-200 font-semibold">
+                      <span className="w-1.5 h-1.5 rounded-full bg-rose-600 animate-pulse-live" />
+                      LIVE
                     </span>
                   )}
                 </button>
@@ -936,49 +905,49 @@ export default function App() {
 
       {/* Main Content */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
-        {/* Clean Production Hero Banner on Explore Tab */}
+        {/* Editorial Hero Section on Explore Tab */}
         {activeTab === 'explore' && (
-          <section className="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 text-white rounded-3xl p-6 sm:p-8 shadow-lg border border-slate-700/80">
+          <section className="bg-zinc-900 text-white rounded-2xl p-6 sm:p-8 border border-zinc-800">
             <div className="max-w-3xl space-y-3">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold border border-emerald-500/30">
+              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-emerald-950 text-emerald-300 text-xs font-medium border border-emerald-800/70">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                 {t.hero.badge}
               </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight leading-snug">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight leading-snug">
                 {t.hero.title}
               </h1>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
                 {t.hero.subtitle}
               </p>
               <div className="flex flex-wrap gap-3 pt-2">
                 <button
                   onClick={() => setActiveTab('order')}
-                  className="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs sm:text-sm transition cursor-pointer flex items-center gap-2"
+                  className="px-4 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs sm:text-sm transition cursor-pointer flex items-center gap-2"
                 >
-                  <Sparkles className="w-4 h-4" />
-                  {t.hero.ctaOrder}
+                  <span>{t.hero.ctaOrder}</span>
+                  <ArrowRight className="w-4 h-4" strokeWidth={1.75} />
                 </button>
                 <button
                   onClick={() => setActiveTab('mealpass')}
-                  className="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm border border-white/15 transition cursor-pointer flex items-center gap-2"
+                  className="px-4 py-2.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-100 font-medium text-xs sm:text-sm border border-zinc-700 transition cursor-pointer"
                 >
-                  <Ticket className="w-4 h-4 text-emerald-300" />
                   {t.hero.ctaPass}
                 </button>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-6 pt-6 border-t border-white/10">
-              <div className="bg-white/5 rounded-2xl p-3.5 border border-white/10">
-                <div className="text-xs font-extrabold text-emerald-300">{t.hero.stat1Title}</div>
-                <div className="text-xs text-slate-300 mt-1">{t.hero.stat1Desc}</div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 pt-6 border-t border-zinc-800">
+              <div>
+                <div className="text-xs font-semibold text-emerald-400">{t.hero.stat1Title}</div>
+                <div className="text-xs text-zinc-400 mt-1">{t.hero.stat1Desc}</div>
               </div>
-              <div className="bg-white/5 rounded-2xl p-3.5 border border-white/10">
-                <div className="text-xs font-extrabold text-amber-300">{t.hero.stat2Title}</div>
-                <div className="text-xs text-slate-300 mt-1">{t.hero.stat2Desc}</div>
+              <div>
+                <div className="text-xs font-semibold text-emerald-400">{t.hero.stat2Title}</div>
+                <div className="text-xs text-zinc-400 mt-1">{t.hero.stat2Desc}</div>
               </div>
-              <div className="bg-white/5 rounded-2xl p-3.5 border border-white/10">
-                <div className="text-xs font-extrabold text-teal-300">{t.hero.stat3Title}</div>
-                <div className="text-xs text-slate-300 mt-1">{t.hero.stat3Desc}</div>
+              <div>
+                <div className="text-xs font-semibold text-emerald-400">{t.hero.stat3Title}</div>
+                <div className="text-xs text-zinc-400 mt-1">{t.hero.stat3Desc}</div>
               </div>
             </div>
           </section>
@@ -989,11 +958,11 @@ export default function App() {
         ===================================================================== */}
         {activeTab === 'explore' && (
           <div className="space-y-6">
-            {/* Filter & Live Crowd Refresh Bar */}
-            <div className="bg-white rounded-2xl p-4 shadow-xs border border-slate-200 flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center flex-wrap gap-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-400 mr-1">
-                  {t.explore.filterTitle}
+            {/* Filter Bar */}
+            <div className="bg-white rounded-xl p-3.5 border border-zinc-200 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center flex-wrap gap-1.5">
+                <span className="text-xs font-medium text-zinc-500 mr-1.5">
+                  {t.explore.filterTitle}:
                 </span>
                 {[
                   { id: 'all', label: t.explore.filterAll },
@@ -1004,10 +973,10 @@ export default function App() {
                   <button
                     key={f.id}
                     onClick={() => setSelectedFilter(f.id)}
-                    className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
                       selectedFilter === f.id
-                        ? 'bg-slate-900 text-white shadow-xs'
-                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        ? 'bg-zinc-900 text-white'
+                        : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
                     }`}
                   >
                     {f.label}
@@ -1017,9 +986,9 @@ export default function App() {
 
               <button
                 onClick={handleRefreshCrowd}
-                className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 flex items-center gap-1.5 transition cursor-pointer"
+                className="px-3 py-1.5 rounded-lg text-xs font-medium bg-zinc-100 hover:bg-zinc-200 text-zinc-700 flex items-center gap-1.5 transition cursor-pointer"
               >
-                <RefreshCw className="w-3.5 h-3.5" />
+                <RefreshCw className="w-3.5 h-3.5 text-zinc-500" strokeWidth={1.75} />
                 {t.explore.refreshCrowd}
               </button>
             </div>
@@ -1031,16 +1000,16 @@ export default function App() {
                 return (
                   <div
                     key={shop.id}
-                    className="bg-white rounded-2xl border border-slate-200 shadow-xs hover:shadow-md transition overflow-hidden flex flex-col"
+                    className="bg-white rounded-xl border border-zinc-200 hover:border-zinc-300 transition overflow-hidden flex flex-col"
                   >
-                    {/* Top Image + Hygiene Grade A/B/C + Crowd Status */}
-                    <div className="relative h-48 bg-slate-200">
+                    {/* Top Image */}
+                    <div className="relative h-44 bg-zinc-200">
                       <img
                         src={shop.image}
                         alt={shopL.name}
                         className="w-full h-full object-cover"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
 
                       {/* Top Left: Hygiene Grade A/B/C */}
                       <div className="absolute top-3 left-3">
@@ -1053,17 +1022,16 @@ export default function App() {
                           setSelectedShopId(shop.id);
                           setActiveTab('kitchen');
                         }}
-                        className="absolute top-3 right-3 bg-slate-900/85 hover:bg-slate-900 text-white px-2.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 backdrop-blur border border-white/15 cursor-pointer"
+                        className="absolute top-3 right-3 bg-zinc-900/80 hover:bg-zinc-900 text-white px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 backdrop-blur-xs border border-white/15 cursor-pointer"
                       >
-                        <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse-live" />
-                        <Video className="w-3.5 h-3.5 text-emerald-400" />
+                        <Video className="w-3.5 h-3.5 text-emerald-400" strokeWidth={1.75} />
                         {t.explore.watchCamBtn}
                       </button>
 
                       {/* Bottom overlay: Crowd Status */}
                       <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-2">
                         {getCrowdBadge(shop.crowdStatus, shop.walkInWaitMinutes)}
-                        <span className="text-xs font-bold text-white bg-emerald-600/90 px-2.5 py-1 rounded-full">
+                        <span className="text-[11px] font-semibold text-white bg-zinc-900/80 border border-white/15 px-2 py-1 rounded-md">
                           {t.explore.priorityLaneBadge} {shop.priorityWaitMinutes}{' '}
                           {t.explore.minutesShort}
                         </span>
@@ -1072,31 +1040,29 @@ export default function App() {
 
                     {/* Card Body */}
                     <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                      <div className="space-y-2.5">
+                      <div className="space-y-3">
                         <div className="flex items-start justify-between gap-2">
                           <div>
-                            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">
+                            <span className="text-[11px] font-medium text-emerald-700">
                               {shopL.category}
                             </span>
-                            <h3 className="font-extrabold text-base text-slate-900 leading-snug mt-0.5">
+                            <h3 className="font-bold text-base text-zinc-900 leading-snug mt-0.5">
                               {shopL.name}
                             </h3>
                           </div>
-                          <div className="flex items-center gap-1 bg-amber-50 border border-amber-200 px-2 py-1 rounded-lg shrink-0">
-                            <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                            <span className="text-xs font-extrabold text-slate-800">
-                              {shop.rating}
-                            </span>
-                            <span className="text-[10px] text-slate-500">({shop.reviewCount})</span>
+                          <div className="flex items-center gap-1 bg-zinc-100 px-2 py-1 rounded-md shrink-0">
+                            <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
+                            <span className="text-xs font-bold text-zinc-800">{shop.rating}</span>
+                            <span className="text-[11px] text-zinc-500">({shop.reviewCount})</span>
                           </div>
                         </div>
 
                         {/* Warning Banner if reported */}
                         {shop.warningCount > 0 && (
-                          <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-300 flex items-start gap-2 text-xs text-amber-900">
-                            <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                          <div className="p-2.5 rounded-lg bg-amber-50/80 border border-amber-200 flex items-start gap-2 text-xs text-amber-900">
+                            <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" strokeWidth={1.75} />
                             <div>
-                              <span className="font-bold">
+                              <span className="font-semibold">
                                 {t.explore.warningBannerPrefix} ({shop.warningCount}):
                               </span>{' '}
                               {t.explore.warningBannerDesc}
@@ -1105,24 +1071,21 @@ export default function App() {
                         )}
 
                         {/* Crowd Meter Bar */}
-                        <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80 space-y-1.5">
+                        <div className="space-y-1.5">
                           <div className="flex justify-between text-xs">
-                            <span className="font-semibold text-slate-600 flex items-center gap-1">
-                              <Users className="w-3.5 h-3.5 text-slate-400" />
-                              {t.explore.currentCrowdLabel}
-                            </span>
-                            <span className="font-bold text-slate-900">
+                            <span className="text-zinc-500">{t.explore.currentCrowdLabel}</span>
+                            <span className="font-medium text-zinc-800 tabular-nums">
                               {shop.crowdCount}/{shop.maxCapacity} {t.explore.peopleUnit}
                             </span>
                           </div>
-                          <div className="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
+                          <div className="w-full h-1.5 rounded-full bg-zinc-100 overflow-hidden">
                             <div
                               className={`h-full rounded-full transition-all ${
                                 shop.crowdStatus === 'low'
-                                  ? 'bg-emerald-500'
+                                  ? 'bg-emerald-600'
                                   : shop.crowdStatus === 'medium'
                                   ? 'bg-amber-500'
-                                  : 'bg-rose-500'
+                                  : 'bg-rose-600'
                               }`}
                               style={{
                                 width: `${Math.min(
@@ -1135,19 +1098,17 @@ export default function App() {
                         </div>
 
                         {/* Daily Ingredient Preview */}
-                        <div className="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200/70 space-y-1.5">
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold text-emerald-900 flex items-center gap-1.5">
-                              <FileText className="w-3.5 h-3.5 text-emerald-600" />
+                        <div className="p-3 rounded-lg bg-zinc-50 border border-zinc-200/80 space-y-1">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="font-semibold text-zinc-800">
                               {t.explore.ingredientLogTitle} ({shopL.ingredientLogs.length}{' '}
                               {t.explore.batchesUnit})
                             </span>
-                            <span className="text-[11px] font-semibold text-emerald-700">
-                              {t.explore.inspectedAt} {shopL.lastInspected}
+                            <span className="text-[11px] text-zinc-500">
+                              {shopL.lastInspected}
                             </span>
                           </div>
-                          <p className="text-xs text-slate-600 line-clamp-2">
-                            ✅{' '}
+                          <p className="text-xs text-zinc-600 line-clamp-2">
                             {shopL.ingredientLogs
                               .map((i) => `${i.item} (${i.origin})`)
                               .join(' • ')}
@@ -1156,10 +1117,10 @@ export default function App() {
                       </div>
 
                       {/* Action Buttons */}
-                      <div className="pt-2 border-t border-slate-100 flex flex-col gap-2">
-                        <div className="flex items-center justify-between text-xs mb-1">
-                          <span className="text-slate-500">{t.explore.priceCommitLabel}</span>
-                          <span className="font-extrabold text-emerald-700 text-sm">
+                      <div className="pt-3 border-t border-zinc-100 space-y-2.5">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-zinc-500">{t.explore.priceCommitLabel}</span>
+                          <span className="font-bold text-zinc-900 tabular-nums">
                             {shopL.priceRange}
                           </span>
                         </div>
@@ -1167,9 +1128,8 @@ export default function App() {
                         <div className="grid grid-cols-2 gap-2">
                           <button
                             onClick={() => setInspectModalShop(shop)}
-                            className="px-3 py-2.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-800 transition flex items-center justify-center gap-1.5 cursor-pointer"
+                            className="px-3 py-2 rounded-lg text-xs font-semibold bg-zinc-100 hover:bg-zinc-200 text-zinc-800 transition cursor-pointer"
                           >
-                            <ShieldCheck className="w-4 h-4 text-emerald-600" />
                             {t.explore.btnInspectLog}
                           </button>
                           <button
@@ -1178,9 +1138,8 @@ export default function App() {
                               setSelectedMenuId(shopL.menu[0]?.id || 'm-101');
                               setActiveTab('order');
                             }}
-                            className="px-3 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer"
+                            className="px-3 py-2 rounded-lg text-xs font-semibold bg-emerald-700 hover:bg-emerald-800 text-white transition cursor-pointer"
                           >
-                            <Sparkles className="w-4 h-4" />
                             {t.explore.btnOrderNow}
                           </button>
                         </div>
@@ -1201,19 +1160,15 @@ export default function App() {
             {/* Left 8 Columns */}
             <div className="lg:col-span-8 space-y-6">
               {/* Step 1: Select Verified Canteen Stall */}
-              <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-4">
+              <div className="bg-white rounded-xl p-5 border border-zinc-200 space-y-4">
                 <div className="flex items-center justify-between flex-wrap gap-2">
-                  <h2 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
-                    <span className="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs flex items-center justify-center">
-                      1
-                    </span>
-                    {t.order.step1Title}
+                  <h2 className="text-sm sm:text-base font-bold text-zinc-900">
+                    1. {t.order.step1Title}
                   </h2>
                   <button
                     onClick={() => setInspectModalShop(selectedShop)}
-                    className="text-xs font-bold text-emerald-700 hover:underline flex items-center gap-1 cursor-pointer"
+                    className="text-xs font-semibold text-emerald-700 hover:underline cursor-pointer"
                   >
-                    <ShieldCheck className="w-4 h-4" />
                     {t.order.viewIngredientBtn}
                   </button>
                 </div>
@@ -1229,24 +1184,24 @@ export default function App() {
                           setSelectedShopId(sh.id);
                           setSelectedMenuId(shL.menu[0]?.id);
                         }}
-                        className={`p-3.5 rounded-xl border-2 cursor-pointer transition ${
+                        className={`p-3.5 rounded-lg border cursor-pointer transition ${
                           active
-                            ? 'border-emerald-600 bg-emerald-50/50'
-                            : 'border-slate-200 hover:border-slate-300 bg-white'
+                            ? 'border-emerald-700 bg-emerald-50/40'
+                            : 'border-zinc-200 hover:border-zinc-300 bg-white'
                         }`}
                       >
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="px-2 py-0.5 rounded text-[11px] font-extrabold bg-emerald-600 text-white">
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-zinc-900 text-white">
                             {t.explore.hygieneGradePrefix} {sh.hygieneGrade}
                           </span>
-                          <span className="text-xs font-bold text-emerald-700">
-                            Omakase {sh.omakasePrice / 1000}k
+                          <span className="text-xs font-semibold text-emerald-800 tabular-nums">
+                            Omakase {sh.omakasePrice.toLocaleString('vi-VN')}đ
                           </span>
                         </div>
-                        <div className="font-bold text-xs text-slate-900 line-clamp-1">
+                        <div className="font-bold text-xs text-zinc-900 line-clamp-1">
                           {shL.name}
                         </div>
-                        <div className="text-[11px] text-slate-500 mt-1">
+                        <div className="text-[11px] text-zinc-500 mt-1">
                           {t.order.priorityWaitLabel}: {sh.priorityWaitMinutes}
                           {t.explore.minutesShort} • {t.order.walkInWaitLabel}: {sh.walkInWaitMinutes}
                           {t.explore.minutesShort}
@@ -1258,75 +1213,70 @@ export default function App() {
               </div>
 
               {/* Step 2: Choose Mode (Omakase Online vs Self-Select Menu) */}
-              <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-5">
+              <div className="bg-white rounded-xl p-5 border border-zinc-200 space-y-5">
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                  <h2 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
-                    <span className="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs flex items-center justify-center">
-                      2
-                    </span>
-                    {t.order.step2Title}
+                  <h2 className="text-sm sm:text-base font-bold text-zinc-900">
+                    2. {t.order.step2Title}
                   </h2>
 
-                  <div className="inline-flex rounded-xl p-1 bg-slate-100 border border-slate-200">
+                  <div className="inline-flex rounded-lg p-1 bg-zinc-100 border border-zinc-200">
                     <button
                       onClick={() => setOrderMode('omakase')}
-                      className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
+                      className={`px-3 py-1.5 rounded-md text-xs font-semibold transition cursor-pointer ${
                         orderMode === 'omakase'
-                          ? 'bg-emerald-600 text-white shadow-xs'
-                          : 'text-slate-600 hover:text-slate-900'
+                          ? 'bg-white text-zinc-900 shadow-2xs'
+                          : 'text-zinc-600 hover:text-zinc-900'
                       }`}
                     >
-                      <Sparkles className="w-3.5 h-3.5" />
                       {t.order.modeOmakase}
                     </button>
                     <button
                       onClick={() => setOrderMode('menu')}
-                      className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
+                      className={`px-3 py-1.5 rounded-md text-xs font-semibold transition cursor-pointer ${
                         orderMode === 'menu'
-                          ? 'bg-emerald-600 text-white shadow-xs'
-                          : 'text-slate-600 hover:text-slate-900'
+                          ? 'bg-white text-zinc-900 shadow-2xs'
+                          : 'text-zinc-600 hover:text-zinc-900'
                       }`}
                     >
-                      <Utensils className="w-3.5 h-3.5" />
                       {t.order.modeMenu}
                     </button>
                   </div>
                 </div>
 
                 {orderMode === 'omakase' ? (
-                  <div className="space-y-4 bg-gradient-to-br from-emerald-50/80 via-white to-teal-50/60 p-4 rounded-2xl border border-emerald-200">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-emerald-200/70">
+                  <div className="space-y-4 bg-zinc-50 p-4 rounded-xl border border-zinc-200">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-200">
                       <div>
-                        <span className="inline-flex items-center gap-1 text-[11px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-600 text-white mb-1">
+                        <span className="inline-block text-[11px] font-semibold text-emerald-700 mb-0.5">
                           {t.order.omakaseBadge}
                         </span>
-                        <h3 className="font-extrabold text-slate-900 text-base">
+                        <h3 className="font-bold text-zinc-900 text-sm sm:text-base">
                           {t.order.omakaseTitle}
                         </h3>
-                        <p className="text-xs text-slate-600 mt-0.5">{t.order.omakaseDesc}</p>
+                        <p className="text-xs text-zinc-600 mt-0.5">{t.order.omakaseDesc}</p>
                       </div>
-                      <div className="text-right shrink-0 bg-white px-3.5 py-2 rounded-xl border border-emerald-200 shadow-2xs">
-                        <div className="text-[11px] text-slate-500">
+                      <div className="text-left sm:text-right shrink-0 bg-white px-3.5 py-2.5 rounded-lg border border-zinc-200">
+                        <div className="text-[11px] text-zinc-500">
                           {t.order.omakasePriceLabel}
                         </div>
-                        <div className="text-lg font-extrabold text-emerald-700">
+                        <div className="text-base font-bold text-zinc-900 tabular-nums">
                           {selectedShop.omakasePrice.toLocaleString('vi-VN')}đ
                         </div>
-                        <div className="text-[11px] font-bold text-amber-700">
+                        <div className="text-[11px] font-medium text-emerald-700">
                           {t.order.orOneTicket}
                         </div>
                       </div>
                     </div>
 
                     {/* Kitchen Hint */}
-                    <div className="p-3 rounded-xl bg-white border border-emerald-200/80 text-xs text-slate-700">
-                      <span className="font-bold text-emerald-800">{t.order.chefHintLabel}</span>
+                    <div className="p-3 rounded-lg bg-white border border-zinc-200 text-xs text-zinc-700 leading-relaxed">
+                      <span className="font-semibold text-zinc-900">{t.order.chefHintLabel}</span>
                       {selectedShopL.omakaseHint}
                     </div>
 
-                    {/* Personal Notes / Preferences Chips */}
+                    {/* Personal Preferences Chips (No emojis, clean checkmarks) */}
                     <div>
-                      <label className="block text-xs font-bold text-slate-800 mb-2">
+                      <label className="block text-xs font-semibold text-zinc-800 mb-2">
                         {t.order.prefTitle}
                       </label>
                       <div className="flex flex-wrap gap-2">
@@ -1337,13 +1287,13 @@ export default function App() {
                               key={pref.id}
                               type="button"
                               onClick={() => togglePref(pref.id)}
-                              className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition cursor-pointer flex items-center gap-1.5 ${
+                              className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition cursor-pointer flex items-center gap-1.5 ${
                                 isSelected
-                                  ? 'bg-emerald-600 text-white border-emerald-600 shadow-2xs'
-                                  : 'bg-white text-slate-700 border-slate-200 hover:border-emerald-400'
+                                  ? 'bg-emerald-800 text-white border-emerald-800'
+                                  : 'bg-white text-zinc-700 border-zinc-200 hover:border-zinc-400'
                               }`}
                             >
-                              <span>{pref.icon}</span>
+                              {isSelected && <Check className="w-3.5 h-3.5" strokeWidth={2.5} />}
                               <span>{pref[lang]}</span>
                             </button>
                           );
@@ -1352,24 +1302,23 @@ export default function App() {
                     </div>
 
                     {/* Preview Omakase Generator */}
-                    <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+                    <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
                       <button
                         type="button"
                         onClick={handleGenerateOmakasePreview}
-                        className="px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 flex items-center gap-1.5 transition cursor-pointer"
+                        className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-zinc-100 text-zinc-800 border border-zinc-300 transition cursor-pointer"
                       >
-                        <Sparkles className="w-4 h-4 text-amber-600" />
                         {t.order.previewOmakaseBtn}
                       </button>
 
                       {omakasePreview && (
-                        <div className="flex-1 bg-white p-3 rounded-xl border border-amber-300 text-xs">
-                          <div className="font-bold text-slate-900">
+                        <div className="flex-1 bg-white p-3 rounded-lg border border-zinc-200 text-xs">
+                          <div className="font-semibold text-zinc-900">
                             {t.order.previewResultTitle} ({omakasePreview.calories}):
                           </div>
-                          <div className="text-slate-600 mt-0.5">
-                            • <b>{t.order.mainDishLabel}:</b> {omakasePreview.main} |{' '}
-                            <b>{t.order.sideDishLabel}:</b> {omakasePreview.side} |{' '}
+                          <div className="text-zinc-600 mt-0.5">
+                            <b>{t.order.mainDishLabel}:</b> {omakasePreview.main} •{' '}
+                            <b>{t.order.sideDishLabel}:</b> {omakasePreview.side} •{' '}
                             <b>{t.order.soupLabel}:</b> {omakasePreview.soup}
                           </div>
                         </div>
@@ -1385,10 +1334,10 @@ export default function App() {
                         <div
                           key={item.id}
                           onClick={() => setSelectedMenuId(item.id)}
-                          className={`rounded-2xl border-2 overflow-hidden cursor-pointer transition flex flex-col ${
+                          className={`rounded-xl border overflow-hidden cursor-pointer transition flex flex-col ${
                             active
-                              ? 'border-emerald-600 bg-emerald-50/40 shadow-sm'
-                              : 'border-slate-200 bg-white hover:border-slate-300'
+                              ? 'border-emerald-700 bg-emerald-50/30'
+                              : 'border-zinc-200 bg-white hover:border-zinc-300'
                           }`}
                         >
                           <img
@@ -1399,25 +1348,25 @@ export default function App() {
                           <div className="p-3.5 flex-1 flex flex-col justify-between space-y-2">
                             <div>
                               <div className="flex items-center justify-between gap-1 mb-1">
-                                <span className="text-xs font-extrabold text-emerald-700">
+                                <span className="text-xs font-bold text-zinc-900 tabular-nums">
                                   {item.price.toLocaleString('vi-VN')}đ
                                 </span>
-                                <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-600">
+                                <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-zinc-100 text-zinc-600">
                                   {item.calories}
                                 </span>
                               </div>
-                              <h4 className="font-bold text-xs text-slate-900 leading-snug">
+                              <h4 className="font-bold text-xs text-zinc-900 leading-snug">
                                 {item.name}
                               </h4>
-                              <p className="text-[11px] text-slate-500 mt-1">
-                                ⚖️ <b>{t.order.portionCommit}</b> {item.portion}
+                              <p className="text-[11px] text-zinc-500 mt-1">
+                                <b>{t.order.portionCommit}</b> {item.portion}
                               </p>
                             </div>
                             <div className="flex flex-wrap gap-1 pt-1">
                               {item.tags.map((tag) => (
                                 <span
                                   key={tag}
-                                  className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800"
+                                  className="text-[10px] font-medium px-2 py-0.5 rounded bg-zinc-100 text-zinc-700"
                                 >
                                   {tag}
                                 </span>
@@ -1432,7 +1381,7 @@ export default function App() {
 
                 {/* Custom Personal Note */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-semibold text-zinc-700 mb-1.5">
                     {t.order.customNoteLabel}
                   </label>
                   <input
@@ -1440,22 +1389,19 @@ export default function App() {
                     value={customNote}
                     onChange={(e) => setCustomNote(e.target.value)}
                     placeholder={t.order.customNotePlaceholder}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:outline-none focus:border-emerald-600 bg-white"
+                    className="w-full px-3.5 py-2 rounded-lg border border-zinc-300 text-xs focus:outline-none focus:border-emerald-700 bg-white"
                   />
                 </div>
               </div>
 
               {/* Step 3: Select Off-peak Pickup Time Slot */}
-              <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-4">
+              <div className="bg-white rounded-xl p-5 border border-zinc-200 space-y-4">
                 <div>
-                  <span className="inline-flex items-center gap-1 text-[11px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 mb-1">
+                  <span className="inline-block text-[11px] font-semibold text-emerald-700 mb-0.5">
                     {t.order.step3Badge}
                   </span>
-                  <h2 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
-                    <span className="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs flex items-center justify-center">
-                      3
-                    </span>
-                    {t.order.step3Title}
+                  <h2 className="text-sm sm:text-base font-bold text-zinc-900">
+                    3. {t.order.step3Title}
                   </h2>
                 </div>
 
@@ -1467,33 +1413,30 @@ export default function App() {
                       <div
                         key={slot.id}
                         onClick={() => setSelectedSlotId(slot.id)}
-                        className={`p-3.5 rounded-xl border-2 cursor-pointer transition ${
+                        className={`p-3.5 rounded-lg border cursor-pointer transition ${
                           active
-                            ? 'border-emerald-600 bg-emerald-50/60'
-                            : 'border-slate-200 hover:border-slate-300 bg-white'
+                            ? 'border-emerald-700 bg-emerald-50/40'
+                            : 'border-zinc-200 hover:border-zinc-300 bg-white'
                         }`}
                       >
                         <div className="flex items-center justify-between mb-1">
-                          <span className="font-extrabold text-sm text-slate-900 flex items-center gap-1">
-                            <Clock className="w-3.5 h-3.5 text-emerald-600" />
+                          <span className="font-bold text-xs sm:text-sm text-zinc-900 tabular-nums">
                             {slot.time}
                           </span>
                           <span
-                            className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                            className={`text-[10px] font-semibold px-2 py-0.5 rounded ${
                               slot.remaining <= 6
                                 ? 'bg-amber-100 text-amber-800'
-                                : 'bg-emerald-100 text-emerald-800'
+                                : 'bg-zinc-100 text-zinc-700'
                             }`}
                           >
                             {t.order.slotsRemainingPrefix} {slot.remaining}{' '}
                             {t.order.slotsRemainingSuffix}
                           </span>
                         </div>
-                        <div className="text-xs font-semibold text-slate-700">{slotL.label}</div>
-                        <div className="text-[11px] text-emerald-700 font-medium mt-1">
-                          🎁 {slotL.bonus}
-                        </div>
-                        <div className="text-[10px] text-slate-500 mt-1">📍 {slotL.lockerZone}</div>
+                        <div className="text-xs font-medium text-zinc-800">{slotL.label}</div>
+                        <div className="text-[11px] text-emerald-700 mt-1">{slotL.bonus}</div>
+                        <div className="text-[11px] text-zinc-500 mt-0.5">{slotL.lockerZone}</div>
                       </div>
                     );
                   })}
@@ -1503,36 +1446,30 @@ export default function App() {
 
             {/* Right 4 Columns: Order Summary & Checkout */}
             <div className="lg:col-span-4 space-y-6">
-              <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm sticky top-28 space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                  <h3 className="font-extrabold text-base text-slate-900">
-                    {t.order.summaryTitle}
-                  </h3>
-                  <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800">
+              <div className="bg-white rounded-xl p-5 border border-zinc-200 sticky top-24 space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-zinc-100">
+                  <h3 className="font-bold text-base text-zinc-900">{t.order.summaryTitle}</h3>
+                  <span className="text-xs font-semibold px-2 py-0.5 rounded bg-zinc-100 text-zinc-800">
                     {t.order.summaryHygienePrefix} {selectedShop.hygieneGrade}
                   </span>
                 </div>
 
                 <div className="space-y-3 text-xs">
-                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
-                    <div className="text-slate-400 font-semibold uppercase text-[10px]">
-                      {t.order.summaryStallLabel}
-                    </div>
-                    <div className="font-bold text-slate-900 text-sm">{selectedShopL.name}</div>
-                    <div className="text-emerald-700 font-medium">{t.order.summaryCamNote}</div>
+                  <div className="p-3 rounded-lg bg-zinc-50 border border-zinc-200/80 space-y-1">
+                    <div className="text-zinc-500 text-[11px]">{t.order.summaryStallLabel}</div>
+                    <div className="font-bold text-zinc-900 text-sm">{selectedShopL.name}</div>
+                    <div className="text-zinc-600">{t.order.summaryCamNote}</div>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
-                    <div className="text-slate-400 font-semibold uppercase text-[10px]">
-                      {t.order.summaryMealLabel}
-                    </div>
-                    <div className="font-bold text-slate-900 text-sm">
+                  <div className="p-3 rounded-lg bg-zinc-50 border border-zinc-200/80 space-y-1">
+                    <div className="text-zinc-500 text-[11px]">{t.order.summaryMealLabel}</div>
+                    <div className="font-bold text-zinc-900 text-sm">
                       {orderMode === 'omakase'
                         ? t.order.summaryOmakaseName
                         : selectedShopL.menu.find((m) => m.id === selectedMenuId)?.name}
                     </div>
                     {orderMode === 'omakase' && (
-                      <div className="text-slate-600 mt-1">
+                      <div className="text-zinc-600 mt-1">
                         <b>{t.order.summaryPrefLabel}</b>{' '}
                         {OMAKASE_PREFERENCES.filter((p) => selectedPrefs.includes(p.id))
                           .map((p) => p[lang])
@@ -1541,61 +1478,59 @@ export default function App() {
                     )}
                   </div>
 
-                  <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 space-y-1">
-                    <div className="text-emerald-700 font-bold uppercase text-[10px]">
+                  <div className="p-3 rounded-lg bg-emerald-50/60 border border-emerald-200 space-y-1">
+                    <div className="text-emerald-800 font-semibold text-[11px]">
                       {t.order.summarySlotLabel}
                     </div>
-                    <div className="font-extrabold text-slate-900 text-sm">
-                      ⏰ {selectedSlot.time} ({selectedSlotL.label})
+                    <div className="font-bold text-zinc-900 text-sm">
+                      {selectedSlot.time} ({selectedSlotL.label})
                     </div>
-                    <div className="text-emerald-800">📍 {selectedSlotL.lockerZone}</div>
-                    <div className="text-[11px] text-slate-600">{t.order.summaryQrHint}</div>
+                    <div className="text-zinc-700">{selectedSlotL.lockerZone}</div>
+                    <div className="text-[11px] text-zinc-500">{t.order.summaryQrHint}</div>
                   </div>
 
                   {/* Payment Selector */}
                   <div className="space-y-2 pt-2">
-                    <div className="font-bold text-slate-800">{t.order.paymentTitle}</div>
+                    <div className="font-semibold text-zinc-800">{t.order.paymentTitle}</div>
                     <label
                       onClick={() => setPaymentMethod('ticket')}
-                      className={`flex items-center justify-between p-3 rounded-xl border-2 cursor-pointer transition ${
+                      className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition ${
                         paymentMethod === 'ticket'
-                          ? 'border-emerald-600 bg-emerald-50/50'
-                          : 'border-slate-200'
+                          ? 'border-emerald-700 bg-emerald-50/40'
+                          : 'border-zinc-200'
                       }`}
                     >
-                      <div className="flex items-center gap-2.5">
-                        <Ticket className="w-5 h-5 text-emerald-600 shrink-0" />
-                        <div>
-                          <div className="font-bold text-slate-900">{t.order.payByTicketTitle}</div>
-                          <div className="text-[11px] text-slate-500">
-                            {t.order.payByTicketDescPrefix} {mealTickets}{' '}
-                            {t.order.payByTicketDescSuffix}
-                          </div>
+                      <div>
+                        <div className="font-semibold text-zinc-900">
+                          {t.order.payByTicketTitle}
+                        </div>
+                        <div className="text-[11px] text-zinc-500">
+                          {t.order.payByTicketDescPrefix} {mealTickets}{' '}
+                          {t.order.payByTicketDescSuffix}
                         </div>
                       </div>
-                      <span className="font-extrabold text-emerald-700 shrink-0">
+                      <span className="font-bold text-emerald-800 shrink-0">
                         {t.order.oneTicketBadge}
                       </span>
                     </label>
 
                     <label
                       onClick={() => setPaymentMethod('wallet')}
-                      className={`flex items-center justify-between p-3 rounded-xl border-2 cursor-pointer transition ${
+                      className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition ${
                         paymentMethod === 'wallet'
-                          ? 'border-emerald-600 bg-emerald-50/50'
-                          : 'border-slate-200'
+                          ? 'border-emerald-700 bg-emerald-50/40'
+                          : 'border-zinc-200'
                       }`}
                     >
-                      <div className="flex items-center gap-2.5">
-                        <Award className="w-5 h-5 text-slate-600 shrink-0" />
-                        <div>
-                          <div className="font-bold text-slate-900">{t.order.payByWalletTitle}</div>
-                          <div className="text-[11px] text-slate-500">
-                            {t.order.walletBalancePrefix} {walletBalance.toLocaleString('vi-VN')}đ
-                          </div>
+                      <div>
+                        <div className="font-semibold text-zinc-900">
+                          {t.order.payByWalletTitle}
+                        </div>
+                        <div className="text-[11px] text-zinc-500">
+                          {t.order.walletBalancePrefix} {walletBalance.toLocaleString('vi-VN')}đ
                         </div>
                       </div>
-                      <span className="font-extrabold text-slate-900 shrink-0">
+                      <span className="font-bold text-zinc-900 shrink-0 tabular-nums">
                         {(orderMode === 'omakase'
                           ? selectedShop.omakasePrice
                           : selectedShopL.menu.find((m) => m.id === selectedMenuId)?.price || 32000
@@ -1608,9 +1543,8 @@ export default function App() {
 
                 <button
                   onClick={handlePlaceOrder}
-                  className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2 transition cursor-pointer"
+                  className="w-full py-3 px-4 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-sm transition cursor-pointer"
                 >
-                  <PackageCheck className="w-5 h-5" />
                   {t.order.confirmOrderBtn}
                 </button>
               </div>
@@ -1625,32 +1559,30 @@ export default function App() {
           <div className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               {/* Left 7 Columns: Live Kitchen Camera Feed */}
-              <div className="lg:col-span-7 bg-slate-900 text-white rounded-2xl overflow-hidden border border-slate-800 shadow-lg flex flex-col justify-between">
+              <div className="lg:col-span-7 bg-zinc-900 text-white rounded-xl overflow-hidden border border-zinc-800 flex flex-col justify-between">
                 {/* Camera Top Bar */}
-                <div className="p-4 bg-slate-950/80 border-b border-slate-800 flex flex-wrap items-center justify-between gap-2">
+                <div className="p-4 bg-zinc-950 border-b border-zinc-800 flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-2.5">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-rose-600 text-white text-xs font-extrabold uppercase tracking-wider">
-                      <span className="w-2 h-2 rounded-full bg-white animate-pulse-live" />
+                    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-rose-600 text-white text-[11px] font-bold tracking-wider">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse-live" />
                       {t.kitchen.liveCamBadge}
                     </span>
-                    <span className="text-xs font-mono text-emerald-400">
+                    <span className="text-xs font-mono text-zinc-400">
                       {selectedShop.cameraCode}
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <select
-                      value={selectedShopId}
-                      onChange={(e) => setSelectedShopId(e.target.value)}
-                      className="bg-slate-800 text-white text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-700"
-                    >
-                      {shops.map((s) => (
-                        <option key={s.id} value={s.id}>
-                          📹 {s[lang].name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                  <select
+                    value={selectedShopId}
+                    onChange={(e) => setSelectedShopId(e.target.value)}
+                    className="bg-zinc-800 text-white text-xs font-medium px-3 py-1.5 rounded-lg border border-zinc-700"
+                  >
+                    {shops.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s[lang].name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 {/* Camera Visual Viewport */}
@@ -1660,44 +1592,41 @@ export default function App() {
                     alt="Kitchen Camera Feed"
                     className="w-full h-full object-cover opacity-85"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/50" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-zinc-950/40" />
 
                   {/* Top HUD */}
                   <div className="absolute top-3 left-3 right-3 flex items-center justify-between text-xs font-mono">
-                    <div className="bg-black/70 backdrop-blur px-3 py-1.5 rounded-lg border border-white/15 text-emerald-300">
-                      🌡️ {t.kitchen.tempLabel} {selectedShopL.kitchenTemp}
+                    <div className="bg-zinc-950/80 backdrop-blur-xs px-3 py-1.5 rounded-md border border-white/10 text-zinc-200">
+                      {t.kitchen.tempLabel} {selectedShopL.kitchenTemp}
                     </div>
-                    <div className="bg-black/70 backdrop-blur px-3 py-1.5 rounded-lg border border-white/15 text-white">
-                      🕒 {liveTime}
+                    <div className="bg-zinc-950/80 backdrop-blur-xs px-3 py-1.5 rounded-md border border-white/10 text-zinc-200 tabular-nums">
+                      {liveTime}
                     </div>
                   </div>
 
-                  {/* Hygiene Detection Box */}
-                  <div className="absolute top-1/3 left-6 sm:left-8 border-2 border-emerald-400/90 bg-emerald-500/10 rounded-xl px-3.5 py-2.5 backdrop-blur-xs max-w-sm">
-                    <div className="text-[11px] font-mono uppercase font-bold text-emerald-300">
+                  {/* Hygiene Status Overlay */}
+                  <div className="absolute top-16 left-3 sm:left-4 border border-emerald-500/60 bg-zinc-950/75 rounded-lg px-3 py-2 backdrop-blur-xs max-w-xs">
+                    <div className="text-[11px] font-semibold text-emerald-400">
                       {t.kitchen.aiCheckTitle}
                     </div>
-                    <div className="text-xs font-bold text-white mt-0.5">
+                    <div className="text-xs text-zinc-200 mt-0.5">
                       {selectedShopL.chefOnDuty} • {t.kitchen.aiCheckDesc}
                     </div>
                   </div>
 
                   {/* Bottom Live Batch Status */}
-                  <div className="absolute bottom-3 left-3 right-3 bg-slate-950/90 backdrop-blur p-3.5 rounded-xl border border-emerald-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <div className="flex items-center gap-2.5">
-                      <Flame className="w-5 h-5 text-amber-400 shrink-0 animate-bounce" />
-                      <div>
-                        <div className="text-[11px] text-emerald-400 font-bold uppercase">
-                          {t.kitchen.currentBatchLabel}
-                        </div>
-                        <div className="text-xs sm:text-sm font-bold text-white">
-                          {selectedShopL.currentCookingBatch}
-                        </div>
+                  <div className="absolute bottom-3 left-3 right-3 bg-zinc-950/90 backdrop-blur-xs p-3.5 rounded-lg border border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                      <div className="text-[11px] text-zinc-400 font-medium">
+                        {t.kitchen.currentBatchLabel}
+                      </div>
+                      <div className="text-xs sm:text-sm font-semibold text-white mt-0.5">
+                        {selectedShopL.currentCookingBatch}
                       </div>
                     </div>
                     <button
                       onClick={() => setInspectModalShop(selectedShop)}
-                      className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shrink-0 cursor-pointer"
+                      className="px-3 py-1.5 rounded-md bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-medium shrink-0 cursor-pointer border border-zinc-700"
                     >
                       {t.kitchen.viewLogBtn}
                     </button>
@@ -1705,18 +1634,18 @@ export default function App() {
                 </div>
 
                 {/* Hygiene Checklist Footer */}
-                <div className="p-4 bg-slate-900 grid grid-cols-1 sm:grid-cols-2 gap-2.5 border-t border-slate-800">
+                <div className="p-4 bg-zinc-900 grid grid-cols-1 sm:grid-cols-2 gap-2 border-t border-zinc-800">
                   {selectedShopL.hygieneChecklist.map((item, idx) => (
                     <div
                       key={idx}
-                      className="flex items-center gap-2 text-xs bg-slate-800/70 px-3 py-2 rounded-lg"
+                      className="flex items-center gap-2 text-xs bg-zinc-800/60 px-3 py-2 rounded-md"
                     >
                       {item.passed ? (
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                        <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" strokeWidth={2} />
                       ) : (
-                        <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+                        <AlertCircle className="w-3.5 h-3.5 text-amber-400 shrink-0" strokeWidth={2} />
                       )}
-                      <span className="text-slate-200">{item.label}</span>
+                      <span className="text-zinc-300">{item.label}</span>
                     </div>
                   ))}
                 </div>
@@ -1724,29 +1653,27 @@ export default function App() {
 
               {/* Right 5 Columns: Real-Time Order Tracker & Fast-Lane QR Pickup */}
               <div className="lg:col-span-5 space-y-6">
-                <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-5">
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-3 gap-2">
+                <div className="bg-white rounded-xl p-5 border border-zinc-200 space-y-5">
+                  <div className="flex items-center justify-between border-b border-zinc-100 pb-3 gap-2">
                     <div>
-                      <span className="text-[11px] font-extrabold uppercase text-emerald-700">
+                      <span className="text-[11px] font-semibold text-zinc-500">
                         {t.kitchen.trackingOrderPrefix} #{orderState.id}
                       </span>
-                      <h3 className="font-extrabold text-base text-slate-900">
-                        {orderItemName}
-                      </h3>
+                      <h3 className="font-bold text-base text-zinc-900">{orderItemName}</h3>
                     </div>
                     <button
                       onClick={() => {
                         setOrderState((prev) => ({ ...prev, step: (prev.step + 1) % 4 }));
                         showToast(t.toasts.stepUpdated);
                       }}
-                      className="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 cursor-pointer shrink-0"
+                      className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-zinc-100 hover:bg-zinc-200 text-zinc-800 border border-zinc-200 cursor-pointer shrink-0"
                     >
                       {t.kitchen.simulateNextBtn}
                     </button>
                   </div>
 
                   {/* 4-Step Progress Bar */}
-                  <div className="space-y-3">
+                  <div className="space-y-2.5">
                     {[
                       {
                         step: 0,
@@ -1776,26 +1703,26 @@ export default function App() {
                       return (
                         <div
                           key={st.step}
-                          className={`p-3 rounded-xl border flex items-start gap-3 transition ${
+                          className={`p-3 rounded-lg border flex items-start gap-3 transition ${
                             current
-                              ? 'bg-emerald-50 border-emerald-500 shadow-2xs'
+                              ? 'bg-emerald-50/50 border-emerald-600'
                               : done
-                              ? 'bg-slate-50 border-slate-200'
-                              : 'bg-white border-slate-100 opacity-50'
+                              ? 'bg-zinc-50 border-zinc-200'
+                              : 'bg-white border-zinc-100 opacity-50'
                           }`}
                         >
                           <div
-                            className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 ${
+                            className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0 mt-0.5 ${
                               done
-                                ? 'bg-emerald-600 text-white'
-                                : 'bg-slate-200 text-slate-600'
+                                ? 'bg-emerald-700 text-white'
+                                : 'bg-zinc-200 text-zinc-600'
                             }`}
                           >
-                            {done ? '✓' : st.step + 1}
+                            {done ? <Check className="w-3 h-3" strokeWidth={2.5} /> : st.step + 1}
                           </div>
                           <div>
-                            <div className="text-xs font-bold text-slate-900">{st.title}</div>
-                            <div className="text-[11px] text-slate-500 mt-0.5">{st.desc}</div>
+                            <div className="text-xs font-semibold text-zinc-900">{st.title}</div>
+                            <div className="text-[11px] text-zinc-500 mt-0.5">{st.desc}</div>
                           </div>
                         </div>
                       );
@@ -1803,24 +1730,22 @@ export default function App() {
                   </div>
 
                   {/* Priority QR Code Locker Box */}
-                  <div className="p-4 rounded-2xl bg-gradient-to-br from-slate-900 to-emerald-950 text-white flex items-center justify-between gap-4">
+                  <div className="p-4 rounded-xl bg-zinc-900 text-white flex items-center justify-between gap-4">
                     <div className="space-y-1">
-                      <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500 text-slate-950">
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-400">
                         {t.kitchen.lockerBadge}
                       </span>
-                      <div className="text-sm font-extrabold">
-                        Locker #{orderState.lockerNumber}
-                      </div>
-                      <div className="text-xs text-emerald-300">
+                      <div className="text-sm font-bold">Locker #{orderState.lockerNumber}</div>
+                      <div className="text-xs text-zinc-300">
                         {t.kitchen.pickupTimeLabel} <b>{orderState.slotTime}</b>
                       </div>
-                      <div className="text-[11px] text-slate-300 font-mono">
+                      <div className="text-[11px] text-zinc-400 font-mono">
                         {t.kitchen.authCodeLabel} {orderState.qrCode}
                       </div>
                     </div>
-                    <div className="bg-white p-3 rounded-xl text-slate-900 flex flex-col items-center shrink-0">
-                      <QrCode className="w-14 h-14 text-slate-900" />
-                      <span className="text-[10px] font-extrabold mt-1">
+                    <div className="bg-white p-2.5 rounded-lg text-zinc-900 flex flex-col items-center shrink-0">
+                      <QrCode className="w-12 h-12 text-zinc-900" strokeWidth={1.5} />
+                      <span className="text-[9px] font-bold tracking-wider mt-1">
                         {t.kitchen.scanQrText}
                       </span>
                     </div>
@@ -1828,19 +1753,14 @@ export default function App() {
                 </div>
 
                 {/* Self-Bring Meal Prep & Microwave Booking */}
-                <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-3">
-                  <div className="flex items-center gap-2.5">
-                    <Microwave className="w-5 h-5 text-emerald-600 shrink-0" />
-                    <div>
-                      <h4 className="font-extrabold text-sm text-slate-900">
-                        {t.kitchen.selfZoneTitle}
-                      </h4>
-                      <p className="text-xs text-slate-500">{t.kitchen.selfZoneSubtitle}</p>
-                    </div>
+                <div className="bg-white rounded-xl p-5 border border-zinc-200 space-y-3">
+                  <div>
+                    <h4 className="font-bold text-sm text-zinc-900">{t.kitchen.selfZoneTitle}</h4>
+                    <p className="text-xs text-zinc-500 mt-0.5">{t.kitchen.selfZoneSubtitle}</p>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 font-semibold">
-                    ✅ {t.kitchen.currentSelfSlotPrefix} {currentSelfSlotText}
+                  <div className="p-3 rounded-lg bg-emerald-50/70 border border-emerald-200 text-xs text-emerald-900 font-medium">
+                    {t.kitchen.currentSelfSlotPrefix} <b>{currentSelfSlotText}</b>
                   </div>
 
                   <div className="space-y-2">
@@ -1849,10 +1769,10 @@ export default function App() {
                       return (
                         <div
                           key={z.id}
-                          className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-2"
+                          className="p-3 rounded-lg bg-zinc-50 border border-zinc-200 text-xs space-y-2"
                         >
-                          <div className="font-bold text-slate-800">{zL.name}</div>
-                          <div className="text-[11px] text-slate-500">🛠️ {zL.equipment}</div>
+                          <div className="font-semibold text-zinc-800">{zL.name}</div>
+                          <div className="text-[11px] text-zinc-500">{zL.equipment}</div>
                           <div className="flex flex-wrap gap-1.5">
                             {zL.slots.map((sl, sIdx) => (
                               <button
@@ -1861,7 +1781,7 @@ export default function App() {
                                   setBookedSelfSlotIndex({ zoneIdx: zIdx, slotIdx: sIdx });
                                   showToast(`${t.toasts.selfSlotBookedPrefix}${sl}`);
                                 }}
-                                className="px-2.5 py-1 rounded-lg bg-white hover:bg-emerald-600 hover:text-white border border-slate-200 text-[11px] font-semibold transition cursor-pointer"
+                                className="px-2.5 py-1 rounded bg-white hover:bg-zinc-900 hover:text-white border border-zinc-200 text-[11px] font-medium transition cursor-pointer"
                               >
                                 {t.kitchen.bookSlotPrefix} {sl}
                               </button>
@@ -1882,64 +1802,60 @@ export default function App() {
         ===================================================================== */}
         {activeTab === 'mealpass' && (
           <div className="space-y-6">
-            {/* Value Proposition Header */}
-            <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-              <div className="space-y-1.5">
-                <span className="inline-flex items-center gap-1 text-xs font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+            <div className="bg-white rounded-xl p-6 border border-zinc-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <span className="text-xs font-semibold text-emerald-700">
                   {t.mealpass.badge}
                 </span>
-                <h2 className="text-xl font-extrabold text-slate-900">{t.mealpass.title}</h2>
-                <p className="text-xs sm:text-sm text-slate-600 max-w-2xl">
+                <h2 className="text-lg sm:text-xl font-bold text-zinc-900">{t.mealpass.title}</h2>
+                <p className="text-xs sm:text-sm text-zinc-600 max-w-2xl">
                   {t.mealpass.subtitle}
                 </p>
               </div>
 
-              <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl text-right shrink-0">
-                <div className="text-xs text-emerald-800 font-semibold">
-                  {t.mealpass.currentTicketsLabel}
-                </div>
-                <div className="text-3xl font-extrabold text-emerald-700">
+              <div className="bg-zinc-50 border border-zinc-200 px-5 py-3.5 rounded-xl text-right shrink-0">
+                <div className="text-xs text-zinc-500">{t.mealpass.currentTicketsLabel}</div>
+                <div className="text-2xl font-bold text-emerald-800 tabular-nums">
                   {mealTickets} {t.mealpass.ticketsUnit}
                 </div>
               </div>
             </div>
 
-            {/* Plans Comparison */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {MEAL_PLANS.map((plan) => {
                 const planL = plan[lang];
                 return (
                   <div
                     key={plan.id}
-                    className="bg-white rounded-2xl p-6 border-2 border-emerald-600/80 shadow-sm flex flex-col justify-between space-y-5"
+                    className="bg-white rounded-xl p-6 border border-zinc-200 flex flex-col justify-between space-y-5"
                   >
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800">
+                        <span className="px-2.5 py-0.5 rounded text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
                           {planL.badge}
                         </span>
-                        <span className="text-xs text-slate-400 line-through">
+                        <span className="text-xs text-zinc-400 line-through tabular-nums">
                           {t.mealpass.retailPricePrefix}{' '}
                           {plan.originalPrice.toLocaleString('vi-VN')}đ
                         </span>
                       </div>
 
-                      <h3 className="text-lg font-extrabold text-slate-900">{planL.name}</h3>
+                      <h3 className="text-base sm:text-lg font-bold text-zinc-900">{planL.name}</h3>
 
                       <div className="flex items-baseline gap-2">
-                        <span className="text-3xl font-extrabold text-emerald-700">
+                        <span className="text-2xl sm:text-3xl font-bold text-zinc-900 tabular-nums">
                           {plan.pricePerMeal.toLocaleString('vi-VN')}đ
                         </span>
-                        <span className="text-xs text-slate-500 font-semibold">
+                        <span className="text-xs text-zinc-500">
                           {t.mealpass.perMealSuffix} ({plan.price.toLocaleString('vi-VN')}đ /{' '}
                           {t.mealpass.forMealsPrefix} {plan.meals} {t.mealpass.mealsUnit})
                         </span>
                       </div>
 
-                      <ul className="space-y-2 pt-2">
+                      <ul className="space-y-2 pt-2 border-t border-zinc-100">
                         {planL.perks.map((perk, idx) => (
-                          <li key={idx} className="flex items-start gap-2 text-xs text-slate-700">
-                            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                          <li key={idx} className="flex items-start gap-2 text-xs text-zinc-600">
+                            <Check className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" strokeWidth={2} />
                             <span>{perk}</span>
                           </li>
                         ))}
@@ -1948,7 +1864,7 @@ export default function App() {
 
                     <button
                       onClick={() => handleBuyMealPlan(plan)}
-                      className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm transition cursor-pointer"
+                      className="w-full py-2.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs sm:text-sm transition cursor-pointer"
                     >
                       {t.mealpass.buyPlanBtnPrefix}
                       {plan.meals}
@@ -1966,31 +1882,31 @@ export default function App() {
         ===================================================================== */}
         {activeTab === 'reviews' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* Left 5 Columns: Submit Student Review or Hygiene Warning Report */}
+            {/* Left 5 Columns */}
             <div className="lg:col-span-5">
               <form
                 onSubmit={handleSubmitReview}
-                className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-4 sticky top-28"
+                className="bg-white rounded-xl p-5 border border-zinc-200 space-y-4 sticky top-24"
               >
                 <div>
-                  <span className="text-[11px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                  <span className="text-[11px] font-semibold text-emerald-700">
                     {t.reviews.badge}
                   </span>
-                  <h3 className="text-base font-extrabold text-slate-900 mt-1">
+                  <h3 className="text-base font-bold text-zinc-900 mt-0.5">
                     {t.reviews.formTitle}
                   </h3>
-                  <p className="text-xs text-slate-500">{t.reviews.formSubtitle}</p>
+                  <p className="text-xs text-zinc-500 mt-0.5">{t.reviews.formSubtitle}</p>
                 </div>
 
                 {/* Mode Switch */}
-                <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl">
+                <div className="grid grid-cols-2 gap-1.5 p-1 bg-zinc-100 rounded-lg border border-zinc-200">
                   <button
                     type="button"
                     onClick={() => setIsHygieneReport(false)}
-                    className={`py-2 rounded-lg text-xs font-bold transition cursor-pointer ${
+                    className={`py-1.5 rounded-md text-xs font-semibold transition cursor-pointer ${
                       !isHygieneReport
-                        ? 'bg-emerald-600 text-white shadow-2xs'
-                        : 'text-slate-600'
+                        ? 'bg-white text-zinc-900 shadow-2xs'
+                        : 'text-zinc-600'
                     }`}
                   >
                     {t.reviews.modeReview}
@@ -1998,10 +1914,10 @@ export default function App() {
                   <button
                     type="button"
                     onClick={() => setIsHygieneReport(true)}
-                    className={`py-2 rounded-lg text-xs font-bold transition cursor-pointer ${
+                    className={`py-1.5 rounded-md text-xs font-semibold transition cursor-pointer ${
                       isHygieneReport
-                        ? 'bg-rose-600 text-white shadow-2xs'
-                        : 'text-slate-600'
+                        ? 'bg-rose-700 text-white shadow-2xs'
+                        : 'text-zinc-600'
                     }`}
                   >
                     {t.reviews.modeReport}
@@ -2009,13 +1925,13 @@ export default function App() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-semibold text-zinc-700 mb-1">
                     {t.reviews.selectStallLabel}
                   </label>
                   <select
                     value={reviewShopId}
                     onChange={(e) => setReviewShopId(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold bg-white"
+                    className="w-full px-3 py-2 rounded-lg border border-zinc-300 text-xs font-medium bg-white"
                   >
                     {shops.map((s) => (
                       <option key={s.id} value={s.id}>
@@ -2026,14 +1942,12 @@ export default function App() {
                 </div>
 
                 <div className="grid grid-cols-3 gap-2">
-                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-center">
-                    <div className="text-[11px] text-slate-500 font-semibold">
-                      {t.reviews.scoreOverall}
-                    </div>
+                  <div className="p-2.5 rounded-lg bg-zinc-50 border border-zinc-200 text-center">
+                    <div className="text-[11px] text-zinc-500">{t.reviews.scoreOverall}</div>
                     <select
                       value={reviewRating}
                       onChange={(e) => setReviewRating(Number(e.target.value))}
-                      className="mt-1 font-extrabold text-xs bg-white border border-slate-200 rounded px-2 py-1"
+                      className="mt-1 font-semibold text-xs bg-white border border-zinc-200 rounded px-2 py-1"
                     >
                       {[5, 4, 3, 2, 1].map((n) => (
                         <option key={n} value={n}>
@@ -2042,14 +1956,12 @@ export default function App() {
                       ))}
                     </select>
                   </div>
-                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-center">
-                    <div className="text-[11px] text-slate-500 font-semibold">
-                      {t.reviews.scoreHygiene}
-                    </div>
+                  <div className="p-2.5 rounded-lg bg-zinc-50 border border-zinc-200 text-center">
+                    <div className="text-[11px] text-zinc-500">{t.reviews.scoreHygiene}</div>
                     <select
                       value={reviewHygiene}
                       onChange={(e) => setReviewHygiene(Number(e.target.value))}
-                      className="mt-1 font-extrabold text-xs bg-white border border-slate-200 rounded px-2 py-1"
+                      className="mt-1 font-semibold text-xs bg-white border border-zinc-200 rounded px-2 py-1"
                     >
                       {[5, 4, 3, 2, 1].map((n) => (
                         <option key={n} value={n}>
@@ -2059,14 +1971,12 @@ export default function App() {
                       ))}
                     </select>
                   </div>
-                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-center">
-                    <div className="text-[11px] text-slate-500 font-semibold">
-                      {t.reviews.scorePortion}
-                    </div>
+                  <div className="p-2.5 rounded-lg bg-zinc-50 border border-zinc-200 text-center">
+                    <div className="text-[11px] text-zinc-500">{t.reviews.scorePortion}</div>
                     <select
                       value={reviewPortion}
                       onChange={(e) => setReviewPortion(Number(e.target.value))}
-                      className="mt-1 font-extrabold text-xs bg-white border border-slate-200 rounded px-2 py-1"
+                      className="mt-1 font-semibold text-xs bg-white border border-zinc-200 rounded px-2 py-1"
                     >
                       {[5, 4, 3, 2, 1].map((n) => (
                         <option key={n} value={n}>
@@ -2079,7 +1989,7 @@ export default function App() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-semibold text-zinc-700 mb-1">
                     {isHygieneReport ? t.reviews.commentLabelReport : t.reviews.commentLabelNormal}
                   </label>
                   <textarea
@@ -2091,19 +2001,18 @@ export default function App() {
                         ? t.reviews.commentPlaceholderReport
                         : t.reviews.commentPlaceholderNormal
                     }
-                    className="w-full p-3 rounded-xl border border-slate-300 text-xs focus:outline-none focus:border-emerald-600"
+                    className="w-full p-3 rounded-lg border border-zinc-300 text-xs focus:outline-none focus:border-emerald-700"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className={`w-full py-3 rounded-xl font-extrabold text-xs text-white flex items-center justify-center gap-2 transition cursor-pointer ${
+                  className={`w-full py-2.5 rounded-lg font-semibold text-xs text-white transition cursor-pointer ${
                     isHygieneReport
-                      ? 'bg-rose-600 hover:bg-rose-700'
-                      : 'bg-emerald-600 hover:bg-emerald-700'
+                      ? 'bg-rose-700 hover:bg-rose-800'
+                      : 'bg-emerald-700 hover:bg-emerald-800'
                   }`}
                 >
-                  <Send className="w-4 h-4" />
                   {isHygieneReport ? t.reviews.submitReportBtn : t.reviews.submitReviewBtn}
                 </button>
               </form>
@@ -2111,14 +2020,14 @@ export default function App() {
 
             {/* Right 7 Columns: Verified Student Reviews Feed */}
             <div className="lg:col-span-7 space-y-4">
-              <div className="bg-white rounded-2xl p-4 border border-slate-200 flex items-center justify-between flex-wrap gap-2">
+              <div className="bg-white rounded-xl p-4 border border-zinc-200 flex items-center justify-between flex-wrap gap-2">
                 <div>
-                  <h3 className="font-extrabold text-sm text-slate-900">
+                  <h3 className="font-bold text-sm text-zinc-900">
                     {t.reviews.feedTitle} ({reviews.length})
                   </h3>
-                  <p className="text-xs text-slate-500">{t.reviews.feedSubtitle}</p>
+                  <p className="text-xs text-zinc-500">{t.reviews.feedSubtitle}</p>
                 </div>
-                <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <span className="text-xs font-medium px-2.5 py-1 rounded-md bg-zinc-100 text-zinc-700 border border-zinc-200">
                   {t.reviews.verifiedBadge}
                 </span>
               </div>
@@ -2128,35 +2037,35 @@ export default function App() {
                 return (
                   <div
                     key={rev.id}
-                    className={`bg-white rounded-2xl p-5 border shadow-2xs space-y-3 ${
-                      rev.isWarning ? 'border-rose-300 bg-rose-50/30' : 'border-slate-200'
+                    className={`bg-white rounded-xl p-5 border space-y-3 ${
+                      rev.isWarning ? 'border-amber-300 bg-amber-50/20' : 'border-zinc-200'
                     }`}
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="font-extrabold text-sm text-slate-900">
+                          <span className="font-bold text-sm text-zinc-900">
                             {revL.studentName}
                           </span>
-                          <span className="text-[11px] text-slate-400">• {revL.timeAgo}</span>
+                          <span className="text-[11px] text-zinc-400">• {revL.timeAgo}</span>
                         </div>
-                        <div className="text-xs font-semibold text-emerald-700 mt-0.5">
-                          📍 {revL.shopName} —{' '}
-                          <span className="text-slate-500">{revL.verifiedOrder}</span>
+                        <div className="text-xs text-zinc-600 mt-0.5">
+                          <span className="font-medium text-emerald-800">{revL.shopName}</span> —{' '}
+                          <span>{revL.verifiedOrder}</span>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-1.5 shrink-0">
-                        <span className="px-2.5 py-1 rounded-lg bg-amber-50 border border-amber-200 text-xs font-extrabold text-amber-800">
-                          ⭐ {rev.rating}/5
+                        <span className="px-2 py-0.5 rounded bg-zinc-100 border border-zinc-200 text-xs font-semibold text-zinc-800">
+                          {rev.rating}/5
                         </span>
-                        <span className="px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-xs font-bold text-emerald-800">
+                        <span className="px-2 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-800">
                           {t.reviews.hygieneScorePrefix} {rev.hygieneRating}/5
                         </span>
                       </div>
                     </div>
 
-                    <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                    <p className="text-xs sm:text-sm text-zinc-700 leading-relaxed">
                       {revL.comment}
                     </p>
 
@@ -2164,20 +2073,20 @@ export default function App() {
                       {revL.tags.map((tag, i) => (
                         <span
                           key={i}
-                          className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
+                          className={`text-[11px] font-medium px-2 py-0.5 rounded ${
                             rev.isWarning
-                              ? 'bg-rose-100 text-rose-800'
-                              : 'bg-slate-100 text-slate-700'
+                              ? 'bg-amber-100 text-amber-900'
+                              : 'bg-zinc-100 text-zinc-600'
                           }`}
                         >
-                          #{tag}
+                          {tag}
                         </span>
                       ))}
                     </div>
 
                     {revL.managerReply && (
-                      <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900">
-                        🛡️ <b>{t.reviews.managerReplyPrefix}</b> {revL.managerReply}
+                      <div className="p-3 rounded-lg bg-zinc-50 border border-zinc-200 text-xs text-zinc-700">
+                        <b>{t.reviews.managerReplyPrefix}</b> {revL.managerReply}
                       </div>
                     )}
                   </div>
@@ -2192,45 +2101,45 @@ export default function App() {
           MODAL: NHẬT KÝ NGUYÊN LIỆU TRONG NGÀY & BẢNG ĐIỂM VỆ SINH A/B/C
       ===================================================================== */}
       {inspectModalShop && (
-        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 space-y-5 my-8">
-            <div className="flex items-start justify-between gap-4 border-b border-slate-100 pb-4">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-xl border border-zinc-200 space-y-5 my-8">
+            <div className="flex items-start justify-between gap-4 border-b border-zinc-100 pb-4">
               <div>
-                <span className="text-xs font-extrabold uppercase text-emerald-700">
-                  {t.modal.badge}
-                </span>
-                <h3 className="text-lg font-extrabold text-slate-900">
+                <span className="text-xs font-semibold text-emerald-700">{t.modal.badge}</span>
+                <h3 className="text-lg font-bold text-zinc-900 mt-0.5">
                   {inspectModalShop[lang].name}
                 </h3>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-zinc-500 mt-0.5">
                   {t.modal.inspectedByPrefix} {inspectModalShop[lang].inspectorTeam} (
                   {inspectModalShop[lang].lastInspected})
                 </p>
               </div>
-              {getHygieneBadge(inspectModalShop.hygieneGrade, inspectModalShop.hygieneScore)}
+              <button
+                onClick={() => setInspectModalShop(null)}
+                className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
 
             {/* Daily Ingredient Origin Table */}
             <div className="space-y-2.5">
-              <h4 className="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-                <FileText className="w-4 h-4 text-emerald-600" />
-                {t.modal.ingredientTableTitle}
-              </h4>
+              <h4 className="text-xs font-bold text-zinc-800">{t.modal.ingredientTableTitle}</h4>
               <div className="space-y-2">
                 {inspectModalShop[lang].ingredientLogs.map((log) => (
                   <div
                     key={log.id}
-                    className="p-3.5 rounded-xl bg-emerald-50/60 border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs"
+                    className="p-3 rounded-lg bg-zinc-50 border border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs"
                   >
                     <div>
-                      <div className="font-extrabold text-slate-900">{log.item}</div>
-                      <div className="text-slate-600">
+                      <div className="font-semibold text-zinc-900">{log.item}</div>
+                      <div className="text-zinc-500">
                         {t.modal.originPrefix} {log.origin}
                       </div>
                     </div>
                     <div className="text-left sm:text-right shrink-0">
-                      <div className="font-bold text-emerald-700">✅ {log.status}</div>
-                      <div className="text-[11px] text-slate-500">
+                      <div className="font-semibold text-emerald-700">{log.status}</div>
+                      <div className="text-[11px] text-zinc-500 tabular-nums">
                         {t.modal.importedAtPrefix} {log.time} • {t.modal.quantityPrefix}{' '}
                         {log.quantity} • {t.modal.storageTempPrefix} {log.tempAtDelivery}
                       </div>
@@ -2242,24 +2151,24 @@ export default function App() {
 
             {/* Weekly Kitchen Inspection Photo & Criteria */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
-              <div className="rounded-xl overflow-hidden border border-slate-200">
+              <div className="rounded-lg overflow-hidden border border-zinc-200">
                 <img
                   src={inspectModalShop.kitchenPhoto}
                   alt="Kitchen Inspection"
                   className="w-full h-40 object-cover"
                 />
-                <div className="p-2 bg-slate-100 text-[11px] font-semibold text-slate-700 text-center">
+                <div className="p-2 bg-zinc-50 text-[11px] text-zinc-600 text-center border-t border-zinc-200">
                   {t.modal.weeklyPhotoCaption}
                 </div>
               </div>
               <div className="space-y-2">
-                <div className="text-xs font-bold text-slate-800">{t.modal.criteriaTitle}</div>
+                <div className="text-xs font-bold text-zinc-800">{t.modal.criteriaTitle}</div>
                 {inspectModalShop[lang].hygieneChecklist.map((chk, i) => (
-                  <div key={i} className="flex items-start gap-2 text-xs text-slate-600">
+                  <div key={i} className="flex items-start gap-2 text-xs text-zinc-600">
                     {chk.passed ? (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <Check className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" strokeWidth={2} />
                     ) : (
-                      <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                      <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" strokeWidth={2} />
                     )}
                     <span>{chk.label}</span>
                   </div>
@@ -2267,10 +2176,10 @@ export default function App() {
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
+            <div className="flex justify-end gap-2 pt-3 border-t border-zinc-100">
               <button
                 onClick={() => setInspectModalShop(null)}
-                className="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 cursor-pointer"
+                className="px-4 py-2 rounded-lg text-xs font-semibold bg-zinc-100 hover:bg-zinc-200 text-zinc-700 cursor-pointer"
               >
                 {t.modal.closeBtn}
               </button>
@@ -2280,7 +2189,7 @@ export default function App() {
                   setInspectModalShop(null);
                   setActiveTab('order');
                 }}
-                className="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer"
+                className="px-4 py-2 rounded-lg text-xs font-semibold bg-emerald-700 hover:bg-emerald-800 text-white cursor-pointer"
               >
                 {t.modal.orderThisStallBtn}
               </button>
@@ -2290,9 +2199,9 @@ export default function App() {
       )}
 
       {/* Footer */}
-      <footer className="bg-white border-t border-slate-200 py-4 mt-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
-          <div className="font-semibold text-slate-700">{t.footer.left}</div>
+      <footer className="bg-white border-t border-zinc-200 py-5 mt-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-zinc-500">
+          <div className="font-medium text-zinc-700">{t.footer.left}</div>
           <div>{t.footer.right}</div>
         </div>
       </footer>
