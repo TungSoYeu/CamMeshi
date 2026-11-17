@@ -214,7 +214,7 @@ const UI_TEXT = {
       orderThisStallBtn: 'Đặt suất ăn tại quầy này',
     },
     footer: {
-      left: 'UniBite — Nền tảng đặt trước bữa trưa & minh bạch vệ sinh học đường',
+      left: 'CamMeshi — Nền tảng đặt trước bữa trưa & minh bạch vệ sinh học đường',
       right: 'Đặt trước & Omakase • Camera bếp • Điểm vệ sinh A/B/C • Nhật ký nguyên liệu • Vé ăn định kỳ',
     },
     toasts: {
@@ -422,7 +422,7 @@ const UI_TEXT = {
       orderThisStallBtn: 'この店舗で予約する',
     },
     footer: {
-      left: 'UniBite — スマート学食予約＆食品衛生可視化プラットフォーム',
+      left: 'CamMeshi (キャンメシ) — スマート学食予約＆食品衛生可視化プラットフォーム',
       right: '事前予約・おまかせ • 厨房カメラ • A/B/C衛生ランク • 食材ログ • 定額ミールパス',
     },
     toasts: {
@@ -478,7 +478,7 @@ export default function App() {
     shopId: 'shop-1',
     slotTime: '11:15 – 11:30',
     lockerNumber: 'A08',
-    qrCode: 'UNIBITE-A08-8829',
+    qrCode: 'CAMMESHI-A08-8829',
     step: 2,
     createdAt: '10:40',
     isOmakase: true,
@@ -610,7 +610,7 @@ export default function App() {
       shopId: selectedShop.id,
       slotTime: selectedSlot.time,
       lockerNumber: lockerNum,
-      qrCode: `UNIBITE-${lockerNum}-${Math.floor(1000 + Math.random() * 9000)}`,
+      qrCode: `CAMMESHI-${lockerNum}-${Math.floor(1000 + Math.random() * 9000)}`,
       step: 1,
       createdAt: new Date().toLocaleTimeString(lang === 'vi' ? 'vi-VN' : 'ja-JP', {
         hour: '2-digit',
@@ -807,13 +807,13 @@ export default function App() {
             className="flex items-center gap-3 cursor-pointer"
           >
             <div className="w-9 h-9 rounded-lg bg-emerald-800 flex items-center justify-center text-white font-extrabold text-sm tracking-tighter">
-              UB
+              CM
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-bold text-lg tracking-tight text-zinc-900">UniBite</span>
+                <span className="font-bold text-lg tracking-tight text-zinc-900">CamMeshi</span>
                 <span className="hidden sm:inline-block text-[11px] font-medium px-2 py-0.5 rounded bg-zinc-100 text-zinc-600 border border-zinc-200">
-                  Campus Dining
+                  {lang === 'vi' ? 'Campus Dining' : 'キャンメシ'}
                 </span>
               </div>
               <p className="hidden md:block text-xs text-zinc-500">{t.tagline}</p>

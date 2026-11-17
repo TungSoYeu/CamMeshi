@@ -1,18 +1,21 @@
-# ITSS-2
+# CamMeshi (キャンメシ)
 
-## UniLunch - Smart Canteen & Đặt Cơm Học Đường (Challenge ① & ②)
+Nền tảng đặt trước bữa trưa học đường & minh bạch vệ sinh an toàn thực phẩm (Hỗ trợ chuyển đổi ngôn ngữ Tiếng Việt / 日本語).
 
-Ứng dụng Web giải quyết bài toán bữa trưa sinh viên (35k–50k mất vệ sinh, ít đồ ăn, xếp hàng giờ cao điểm):
-- **Challenge ①:** Đặt trước suất ăn & Chế độ **Omakase Online** (Nhà bếp tự phối theo ghi chú cá nhân), **Camera bếp trực tiếp**, Khu tự túc đặt lịch lò vi sóng/bồn rửa hộp 1 ngăn, Hệ thống đánh giá quán & Cảnh báo vệ sinh ẩn danh, Theo dõi trạng thái đông đúc của quán.
-- **Challenge ②:** Chốt menu & Chọn khung giờ nhận đồ trước né giờ cao điểm (Làn ưu tiên / Tủ khóa giữ nhiệt QR), **Gói vé ăn định kỳ Tuần/Tháng** (25k–28k/suất), **Nhật ký nguyên liệu tươi sống trong ngày**, **Bảng điểm vệ sinh A/B/C**.
+## Tính năng chính
+- **Khám phá quầy ăn & Minh bạch vệ sinh:** Xem xếp hạng vệ sinh **A / B / C**, nhật ký nguồn gốc nguyên liệu tươi sống nhập lúc 05:30 sáng và tình trạng lượng khách thực tế tại quầy.
+- **Đặt trước thực đơn & Chế độ Omakase:** Tự chọn món có cam kết định lượng (gram) hoặc chọn chế độ **Omakase** để đầu bếp tự phối suất ăn nóng sốt dựa trên ghi chú khẩu vị cá nhân.
+- **Nhận đồ không cần xếp hàng:** Chọn khung giờ nhận đồ tại **Làn nhận đồ ưu tiên** hoặc **Tủ khóa giữ nhiệt quét mã QR**.
+- **Theo dõi Camera bếp & Khu tự túc:** Xem trực tiếp quy trình chế biến tại bếp và đặt lịch sử dụng lò vi sóng / bồn rửa cho sinh viên tự mang hộp cơm từ nhà.
+- **Gói vé ăn định kỳ & Cộng đồng đánh giá:** Đăng ký gói vé Tuần / Tháng tiết kiệm đến 30% (chỉ từ 25.000đ/bữa) và gửi đánh giá hoặc phản ánh vệ sinh ẩn danh.
 
-### Chạy dự án tại máy (Local)
+## Chạy dự án tại máy (Local)
 ```bash
 npm install
 npm run dev
 ```
 
-### Build cho Production (Vercel)
+## Build cho Production (Vercel)
 ```bash
 npm run build
 ```
